@@ -21,4 +21,4 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # Gunicorn orqali ishga tushirish
-CMD ["gunicorn", "project.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD python manage.py migrate --noinput && gunicorn project.wsgi:application --bind 0.0.0.0:8080
