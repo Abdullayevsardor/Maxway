@@ -1,1 +1,1 @@
-web: gunicorn "Filial_score-main.wsgi"
+web: gunicorn "project.wsgi"
