@@ -26,12 +26,14 @@ load_dotenv(BASE_DIR / ".env")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-$u&+(5ocl)9(ml3-ay(@ea71l#+0&%7vw6wyv4k1uv(515o$)s'
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG") == "True"
+# SECRET_KEY ni muhitdan oladi, agar yo'q bo'lsa xato beradi (xavfsiz usul)
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+# DEBUG ni ham productionda False qilish kerak
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 GLOBAL_WORKER_PIN = os.getenv("GLOBAL_WORKER_PIN")
 
 # CSRF xavfsizligi uchun ishonchli domenlar ro'yxati
