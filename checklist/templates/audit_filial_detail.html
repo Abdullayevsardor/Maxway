@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}{{ filial_name }} - Audit Tafsilotlari{% endblock %}
+
+{% block extra_head %}
+<style>
+body { font-family: Arial; padding: 20px; background: #eef3f4; }
+h1 { text-align: center; color: #333; margin-bottom: 30px; }
+
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+th, td { border: 1px solid #999; padding: 8px; text-align: left; vertical-align: top; }
+th { background: #d3edf4; }
+
+.score { text-align: center; font-weight: bold; padding: 5px; border-radius: 4px; }
+.green { background-color: #50ed6f; }
+.yellow { background-color: #dec046; }
+.red { background-color: #e92b41; }
+
+.image-preview { max-width: 100px; max-height: 150px; border: 1px solid #89bcf3; border-radius: 4px; }
+
+.audit-block { margin-bottom: 50px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+.export-buttons { text-align: right; margin-bottom: 10px; }
+.export-buttons a { text-decoration: none; color: white; padding: 5px 12px; border-radius: 4px; margin-left: 5px; display: inline-block; }
+.excel { background-color: #2196F3; }
+.pdf { background-color: #f44336; }
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    text-align: center;
+}
+
+.modal-content {
+    margin-top: 5%;
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 8px;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.image-preview {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.image-preview:hover {
+    transform: scale(1.05);
+}
+
+/* ✅ Responsive qo‘shimchalar (dizayn o‘zgarmaydi, faqat moslashadi) */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 768px) {
+  body { padding: 12px; }
+  h1 { font-size: 18px; margin-bottom: 18px; }
+  .audit-block { padding: 12px; }
+  h2 { font-size: 16px; margin: 8px 0; }
+  h3 { font-size: 14px; margin: 8px 0; }
+
+  th, td { padding: 6px; font-size: 13px; }
+  .image-preview { max-width: 90px; max-height: 120px; }
+  .export-buttons a { padding: 8px 10px; margin-left: 6px; }
+}
+
+@media (max-width: 420px) {
+  .export-buttons { text-align: left; }
+  .export-buttons a { margin: 6px 6px 0 0; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ filial_name }} - Audit Tafsilotlari</h1>
+
+{% if audit_data %}
+  {% for audit_info in audit_data %}
+    <div class="audit-block">
+      <h2>
+        Auditor: {{ audit_info.audit.auditor|default:"-" }}
+      </h2>
+      <h2>Audit ID: {{ audit_info.audit.id }} | Sana: {{ audit_info.audit.created_at|date:"d-m-Y H:i" }}</h2>
+      <h3>Umumiy Foiz: {{ audit_info.percent }}%</h3>
+
+      <div class="export-buttons">
+        <a href="{% url 'export_audit_detail_excel' audit_info.audit.id %}" class="excel">Excel Export</a>
+        <a href="{% url 'export_audit_detail_pdf' audit_info.audit.id %}" class="pdf">PDF Export</a>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Band nomi</th>
+              <th>Ball</th>
+              <th>Rasm</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for band in audit_info.bands %}
+              <tr>
+                <td>{{ band.band_name }}</td>
+                <td class="score
+                  {% if band.score == 3 %}green
+                  {% elif band.score == 2 %}yellow
+                  {% else %}red
+                  {% endif %}">
+                  {{ band.score }}
+                </td>
+                <td>
+                  {% if band.images %}
+                    {% for image in band.images %}
+                      <img src="{{ image }}"
+                           class="image-preview"
+                           onclick="openImageModal(this.src)" />
+                    {% endfor %}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>Bu filial uchun auditlar topilmadi.</p>
+{% endif %}
+
+<div id="imageModal" class="modal" onclick="closeImageModal()">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="modalImage">
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openImageModal(src) {
+  document.getElementById("imageModal").style.display = "block";
+  document.getElementById("modalImage").src = src;
+}
+
+function closeImageModal() {
+  document.getElementById("imageModal").style.display = "none";
+}
+</script>
+{% endblock %}

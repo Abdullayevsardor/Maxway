@@ -1,0 +1,30 @@
+# Maxfiylik
+.env
+config/secrets.yml
+
+# Python kesh va muhit
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Paket Menedjeri papkalari
+/node_modules/
+
+# Kompilyatsiya va Natijalar
+/build/
+/dist/
+*.log
+*.tmp
+*.bak
+
+# Ma'lumotlar bazasi
+*.sqlite3
+
+# IDE/OS Fayllari
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

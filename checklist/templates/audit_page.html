@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Natijalari{% endblock %}
+
+{% block content %}
+
+<h2>Audit natijalari</h2>
+
+<form method="GET" class="filters">
+    <select name="filial">
+        <option value="all">Barcha filiallar</option>
+        {% for f in all_filials %}
+            <option value="{{ f }}" {% if request.GET.filial == f %}selected{% endif %}>{{ f }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="date" name="from" value="{{ request.GET.from }}">
+    <input type="date" name="to" value="{{ request.GET.to }}">
+    <button type="submit">Filtrlash</button>
+
+    <div class="export-buttons">
+        <!-- Excel Export -->
+        <a href="{% url 'audit_export_excel' %}?{% if request.GET.filial %}filial={{ request.GET.filial }}&{% endif %}{% if request.GET.from %}from={{ request.GET.from }}&{% endif %}{% if request.GET.to %}to={{ request.GET.to }}{% endif %}"
+           class="excel">Excel Export</a>
+
+        <!-- PDF Export -->
+        <a href="{% url 'audit_export_pdf' %}?{% if request.GET.filial %}filial={{ request.GET.filial }}&{% endif %}{% if request.GET.from %}from={{ request.GET.from }}&{% endif %}{% if request.GET.to %}to={{ request.GET.to }}{% endif %}"
+           class="pdf">PDF Export</a>
+    </div>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Filial nomi</th>
+            <th>Umumiy foiz</th>
+            <th>Sana</th>
+            <th>Amallar</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for audit in audits %}
+        <tr>
+            <td>
+                <a href="{% url 'audit_filial_detail' audit.filial_nomi %}">
+                    {{ audit.filial_nomi }}
+                </a>
+            </td>
+            <td>{{ audit.percent }}%</td>
+            <td>{{ audit.created_at|date:"Y-m-d H:i" }}</td>
+            <td>
+                <form method="POST" action="{% url 'audit_delete' audit.id %}"
+                      onsubmit="return confirm('Rostdan ham o‘chirmoqchimisiz?');">
+                    {% csrf_token %}
+                    <button type="submit"
+                            style="background:#f44336;color:white;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;">
+                        O‘chirish
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+
+{% block extra_head %}
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; background: #eef3f4; }
+h2 { text-align: center; margin-bottom: 20px; }
+
+
+.filters {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filters select, .filters input[type="date"] {
+    padding: 5px;
+    font-size: 16px;
+}
+
+.filters button {
+    padding: 5px 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filters a {
+    margin-left: auto;
+    padding: 5px 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.filters a.excel { background: #2196F3; }
+.filters a.pdf { background: #f44336; margin-left: auto; } */ */
+
+
+/* === FILTERS: ixcham chap burchak === */
+.filters{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.filters select,
+.filters input[type="date"]{
+  width:auto;          /* global 100% ni override */
+  max-width:160px;     /* ixcham */
+  min-width:120px;     /* juda kichrayib ketmasin */
+  padding-right:12px;  /* date icon yaqinroq ko‘rinsin */
+}
+
+/* telefonlarda baribir 100% bo‘lsin */
+@media (max-width: 600px){
+  .filters select,
+  .filters input[type="date"]{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+  }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #999;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #d3edf4;
+    font-size: 16px;
+}
+
+td a {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.export-buttons {
+    justify-content: flex-end;
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+    max-width: fit-content;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,683 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Audit Formasi{% endblock %}
+
+{% block extra_head %}
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Umumiy stil */
+body { font-family: Arial, sans-serif; background-color: #eef3f4; }
+h1 { text-align: center; color: #333; margin-bottom: 18px; }
+
+/* Audit form container */
+.audit-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+/* Filial kiritish overlay */
+#filialInputOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 16px;
+}
+#filialInputBox {
+  overflow: hidden; 
+  background: rgb(244, 247, 248);
+  width: 100%;
+  max-width: 420px;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+#filialInputBox h2 { margin: 0 0 10px; }
+#filialInput {
+  padding: 10px 12px;
+  margin: 12px 0;
+  width: 100%;
+  border: 1px solid #dfe7ea;
+  border-radius: 10px;
+  font-size: 16px;
+}
+#startAuditBtn {
+  width: 100%;
+  display: block;
+  min-height: 44px;
+  padding: 12px 14px;
+  background-color: #2a87ea;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Jadval */
+.table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 16px; min-width: 780px; background: #fff; }
+th, td {
+  border: 1px solid #161717;
+  padding: 8px;
+  text-align: left;
+  word-wrap: break-word;
+  vertical-align: top;
+}
+th { background-color: #d3edf4; text-align: center; font-size: 0.95em; }
+
+th:first-child, td:first-child { width: 50%; text-align: center; }
+.subheader-row th { background-color: #9ccadf; font-style: italic; text-align: left; font-size: 1em; }
+
+.score-column { width: 25%; text-align: center; }
+.image-column { width: 25%; }
+
+/* Ball input */
+.score-input {
+  width: 90%;
+  max-width: 90px;
+  border: 1px solid #110f0f;
+  padding: 6px 0;
+  margin: 0 auto 5px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+}
+
+/* Bo‘sh qolgan score inputni aniq ko‘rsatish */
+.score-input.invalid {
+  border: 2px solid #e92b41 !important;
+  box-shadow: 0 0 0 3px rgba(233, 43, 65, 0.25) !important;
+}
+
+
+/* Xohlasangiz bo‘sh qolgan katakning fonini ham biroz qizartiramiz */
+td.score-column.invalid-cell {
+  background: rgba(233, 43, 65, 0.08) !important;
+}
+
+/* Ranglar */
+.green { background-color: #50ed6f !important; }
+.yellow { background-color: #dec046 !important; }
+.red { background-color: #e92b41 !important; }
+.default { background-color: rgb(253, 251, 251) !important; }
+
+/* Rasm upload */
+.image-container { display: block; }
+.image-preview-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-top: 6px;
+  cursor: pointer;
+  max-width: 90%;
+}
+.image-preview {
+  max-width: 110px;
+  max-height: 160px;
+  height: auto;
+  object-fit: contain;
+  border: 2px solid #89bcf3;
+  border-radius: 6px;
+  display: block;
+}
+.delete-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border: 1px solid white;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  text-align: center;
+  line-height: 26px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+.image-preview-wrapper:hover .delete-btn { opacity: 1; }
+.overlay-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.overlay-actions .o-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 60px;
+  min-height: 36px;
+  font-size: 13px;
+  border-radius: 10px;
+  text-decoration: none;
+  background: #ced2d6;
+  color: #000;
+}
+
+.overlay-actions .o-btn.warning {
+  background: #ced2d6;
+  color: #000;
+}
+
+/* Telefon uchun yanada ixcham */
+@media (max-width: 480px) {
+  .overlay-actions {
+    flex-direction: column;
+  }
+  .overlay-actions .o-btn {
+    width: 100%;
+  }
+}
+
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+ 
+<div id="filialInputOverlay">
+  <div id="filialInputBox">
+    <h2>Filial nomini kiriting</h2>
+
+    <input type="text" id="filialInput" placeholder="name" required>
+
+    <!-- ASOSIY TUGMA -->
+    <button type="button" id="startAuditBtn">
+      Auditni boshlash
+    </button>
+
+    <!-- 🔽 FAQAT NATIJA VA PAST BALLAR -->
+    {% if request.user.is_authenticated %}
+    <div class="overlay-actions">
+      <a href="{% url 'audit_page' %}" class="o-btn">
+        📊 Natijalar
+      </a>
+      <a href="{% url 'low_scores' %}" class="o-btn warning">
+        ⚠ Past ballar
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+
+
+<h1 id="mainTitle" style="display:none;">[Filial nomi] Auditi Formasi</h1>
+
+<div style="font-weight:600; margin-bottom:10px;">
+  Auditor: {{ request.session.auditor_username }}
+</div>
+
+<div class="audit-card">
+  <form id="auditForm" method="POST" action="{% url 'audit_form' %}" enctype="multipart/form-data" style="display:none;">
+    {% csrf_token %}
+
+    <input type="hidden" id="hiddenFilialName" name="filial_nomi" value="">
+    <input type="hidden" id="hiddenTotalPercentage" name="total_percentage" value="">
+
+    <h2 id="totalPercentHeader">Umumiy Foiz: 0.00%</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Band nomi</th>
+            <th style="width: 100px;">Ball (0-3)</th>
+            <th style="width: 250px;">Rasm</th>
+          </tr>
+        </thead>
+        <tbody id="audit-body"></tbody>
+      </table>
+    </div>
+
+    <div style="text-align:right;">
+      <button type="submit" class="btn btn-success" style="min-width:220px;">
+        Ma'lumotlarni Saqlash
+      </button>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const successUrl = "{% url 'audit_success' %}";
+
+const AUDIT_DATA = [
+  { bandId: "hujjatlar", text: "Hujjatlar saqlanishi (arxiv/papka)" },
+  { bandId: "oxknv", text: "OXKNV chek-listi" },
+  { bandId: "xodimlar_chek_listi", text: "Xodimlar chek-listi (ishga kirishayotgan)" },
+  { bandId: "dezinfeksiya_jurnali", text: "Dezinfeksiya jurnali" },
+  { bandId: "bakteritsid_lampa", text: "Bakteritsid lampa jurnali" },
+  { bandId: "tibbiy_koriklar", text: "Tibbiy ko'riklar (o'tmaganlar soni) [-1; -2; -2; -1; -3; 0]" },
+  { bandId: "sanminimum", text: "Sanminimum (guvohnomasi yo'q xodimlar soni) [-1; -2; -2; -1; -3; 0]" },
+  { bandId: "dezinfeksiya_shartnomasi", text: "Dezinfeksiya shartnomasi va aktlari" },
+  { bandId: "qol_yuvish_zaxirasi", text: "Qo'l yuvish vositasi (Solides) zaxirasi" },
+  { bandId: "dori_qutisi", text: "Dori qutisidagi dori vositalari ro'yxatga asosan" },
+  { bandId: "termometr_metrologiya", text: "Termometr va psixrometrlarning metrologiyadan o'tkazilgani [-1; -2; -2; -1; -3; 0]" },
+  { bandId: "tarozilar_metrologiya", text: "Tarozilar metrologiyadan o'tkazilgani [-1; -2; -2; -1; -3; 0]" },
+
+  { bandId: "oshxona_subheader", text: "Oshxona", subheader: true },
+  { bandId: "oshxona_qol_yuvish", text: "Oshxona: Kirishda qo'l yuvish vositalari barchasi mavjud" },
+  { bandId: "oshxona_tozalik_sifati", text: "Oshxona: Tozalik sifati (pol, devor, plintuslar)" },
+  { bandId: "oshxona_anjom_tamgasi", text: "Oshxona: Anjom va ish stollari tamg'alangan, maqsadli ishlatilishi" },
+  { bandId: "oshxona_xom_pishgan", text: "Oshxona: Xom va pishgan mahsulotlar alohida saqlanishi" },
+  { bandId: "oshxona_saqlash_muddatlari", text: "Oshxona: Mahsulotlarning birlamchi saqlash muddatlari" },
+  { bandId: "oshxona_joylashtirish", text: "Oshxona: Mahsulotlar to'g'ri joylashtirilgan, ochiq emas" },
+  { bandId: "oshxona_idish_almashtirish", text: "Oshxona: Idishlar har safar yangi mahsulot solishda almashtiriladimi" },
+  { bandId: "oshxona_bitta_anjom", text: "Oshxona: Mahsulot tayyorlashda bitta anjomdan foydalaniladimi" },
+  { bandId: "oshxona_bodring_marinad", text: "Oshxona: To'g'ralgan tuzlangan bodring o'z marinadi suyuqqa solinadimi" },
+  { bandId: "oshxona_tozalash_vositalari", text: "Oshxona: Tozalash vositalari ro'yxati va me'yoriy hujjati" },
+  { bandId: "oshxona_harorat", text: "Oshxona: Sovutgich va muzlatgichda haroratga rioya qilinishi" },
+  { bandId: "oshxona_sovutgich_joy", text: "Oshxona: Sovutgich ichida ishlashi uchun joy" },
+  { bandId: "oshxona_issiqlik", text: "Oshxona: Issiqlik bilan ishlov berish muddatlari" },
+  { bandId: "oshxona_gosht_aralashmasligi", text: "Oshxona: Xom va pishgan go'sht aralashmasligi \"go'yilmaydimi\"" },
+  { bandId: "oshxona_fritur_muddat", text: "Oshxona: Fritur yog'i va boshqa mahsulotlarning muddatiga rioya qilinishi" },
+  { bandId: "oshxona_fritur_talab", text: "Oshxona: Fritur yog'i talabga javob beradimi" },
+  { bandId: "oshxona_ovqat_qoldigi", text: "Oshxona: Ovqat qoldiqlari maxsus idishda" },
+  { bandId: "oshxona_chiqindi_urna", text: "Oshxona: Chiqindi urnalar to'lishi 2/3 qismdan oshmagan, qopqoq (qopqoq teshikchasiz)" },
+  { bandId: "oshxona_issiq_suv", text: "Oshxona: Issiq suv ta'minoti" },
+  { bandId: "oshxona_dezozvita", text: "Oshxona: Ishchi kiyimlar uchun dezozvita tayyorlanganmi (2 chelak)" },
+
+  { bandId: "salatxona_subheader", text: "Salatxona", subheader: true },
+  { bandId: "salatxona_tozalik", text: "Salatxona: Tozalik sifati (pol, devor, plintuslar)" },
+  { bandId: "salatxona_anjom_yuvish_suv", text: "Salatxona: Anjom va idish yuvish uchun hot-suv" },
+  { bandId: "salatxona_harorat", text: "Salatxona: Nazorat termometri bor, harorat talabga javob beradi" },
+  { bandId: "salatxona_sovutgich_rioya", text: "Salatxona: Sovutgich ichidagi mahsulotlarga rioya qilinishi" },
+  { bandId: "salatxona_mahsulot_qoshniligi", text: "Salatxona: Sovutgich ichida mahsulot qo'shniligi" },
+  { bandId: "salatxona_maxsus_qoidalar", text: "Salatxona: Mahsulotlarning maxsus qoidalari bilan belgilangan" },
+  { bandId: "salatxona_anjomlar_maqsad", text: "Salatxona: Anjomlar maqsadli ishlatiladimi (pichog, taxtakach va h.)" },
+  { bandId: "salatxona_anjom_toza", text: "Salatxona: Anjom va idishlar toza, dezinfeksiya uchun tamg'alangan" },
+  { bandId: "salatxona_sabzavot_urna", text: "Salatxona: Sabzavot va ko'kat qoldiqlari uchun urna tamg'alangan" },
+  { bandId: "salatxona_sovuq_ishlov", text: "Salatxona: Sovuq ishlov berish" },
+
+  { bandId: "moykova_subheader", text: "Moykova", subheader: true },
+  { bandId: "moykova_tozalik", text: "Moykova: Tozalik sifati (pol, devor, plintuslar)" },
+  { bandId: "moykova_qoplamalar", text: "Moykova: Devor, pol qoplamalari holati" },
+  { bandId: "moykova_yuvish_vositalari", text: "Moykova: Yuvish vositalari ro'yxatga asosan, qopqoq asosan" },
+  { bandId: "moykova_chotka", text: "Moykova: Anjom va idish yuvish uchun chotka va b. vositalar holati" },
+  { bandId: "moykova_yuvish_jarayoni", text: "Moykova: Idishlarning yuvish jarayoni toza" },
+  { bandId: "moykova_toza_anjom", text: "Moykova: Toza anjomlar saqlanishi, maxsus konteyner mavjudmi" },
+  { bandId: "moykova_kir_anjom", text: "Moykova: Kir anjomlar saqlanishi" },
+  { bandId: "moykova_jiroluvittel_tozaligi", text: "Moykova: Jiroluvittel tozaligi" },
+  { bandId: "moykova_jiroluvittel_dezinfeksiya", text: "Moykova: Jiroluvittel uchun dezinfeksiya uchun idish tamg'alangan" },
+  { bandId: "moykova_ovqat_qoldigi_urna", text: "Moykova: Ovqat qoldiqlari uchun urna tamg'alangan, 2/3 to'lganda tozalash" },
+  { bandId: "moykova_ishchi_kiyim", text: "Moykova: Ishchi kiyim holati" },
+  { bandId: "moykova_dezmodda_tayyorlash", text: "Moykova: Dezmodda to'g'ri tayyorlanishi va qo'llanilishi (konsentratsiya)" },
+
+  { bandId: "ombor_subheader", text: "Ombor", subheader: true },
+  { bandId: "ombor_harorat", text: "Ombor: Termometr va psixrometr soz. Harorat va namlik talab darajasida" },
+  { bandId: "ombor_saqlash_muddat", text: "Ombor: Mahsulot saqlanish muddatiga rioya qilish" },
+  { bandId: "ombor_stellajlar", text: "Ombor: Stellajlar tagi va usti tozalangan va begona buyumlar yo'q" },
+  { bandId: "ombor_joylashuv", text: "Ombor: Mahsulotlar stend ustida, devordan 0.5-1.0m oralig'i bilan" },
+  { bandId: "ombor_yaroqlilik_sanasi", text: "Ombor: Mahsulotlarida yaroqlilik sanasi yo'q ma'lumotlar" },
+  { bandId: "ombor_tozalash_vositalari", text: "Ombor: Tozalash vositalari, kir yuvish vositalari va dezinfeksiya vositalari joylashtirilgan" },
+  { bandId: "ombor_quruq_hol", text: "Ombor: Quruq va ho'l mahsulotlar yig'ish" },
+  { bandId: "ombor_muzlatgich_termometr", text: "Ombor: Muzlatgichdan olinadigan harorat termometrlari bor" },
+  { bandId: "ombor_mahsulot_qoshniligi", text: "Ombor: Sovutgich va muzlatgichda mahsulot qo'shniligi" },
+  { bandId: "ombor_harorat_qoshniligi", text: "Ombor: Sovutgich va muzlatgichda harorat qo'shniligi" },
+  { bandId: "ombor_tartib", text: "Ombor: Mahsulotlarning joylashuvi tartibga solish holati" },
+  { bandId: "ombor_qadoqlangan", text: "Ombor: Qadoqlangan yopiq holda (korobkasi yopiq)" },
+  { bandId: "ombor_begona_buyumlar", text: "Ombor: Begona buyumlar chiqarib" },
+
+  { bandId: "koridor_subheader", text: "Koridor", subheader: true },
+  { bandId: "koridor_tozalik", text: "Koridor: Tozalik holati" },
+  { bandId: "koridor_tosiq", text: "Koridor: Kirishda polni to'siq qo'yilmagan" },
+  { bandId: "koridor_qoplama", text: "Koridor: Devor va pollar qoplamasi holati" },
+  { bandId: "koridor_begona_narsalar", text: "Koridor: Begona narsalar (o'rnida bo'lmagan narsalar bormi, g'uflanadimi)" },
+  { bandId: "koridor_dezbarer", text: "Koridor: Xodimlar hojatxonasidan chiqishda dezbar'yer bormi" },
+  { bandId: "koridor_bezaklar", text: "Koridor: Devorlardagi bezaklar (plakatlar va h.)" },
+  { bandId: "koridor_mop_yuvish", text: "Koridor: Mop anjomlari ro'yxnomaga asosan yuviladi, sarasizlantiriladi" },
+  { bandId: "koridor_mop_sarasizlantirish", text: "Koridor: Mop anjomlari yuviladi, sarasizlantiriladi" },
+  { bandId: "koridor_mop_saqlash", text: "Koridor: Mop anjomlari saqlanishi (Hojatxona anjomlari alohida)" },
+  { bandId: "koridor_shkaflar_pol", text: "Koridor: Shkaflar va pol" },
+
+  { bandId: "zal_subheader", text: "Zal", subheader: true },
+  { bandId: "zal_tozalik", text: "Zal: Tozalik holati" },
+  { bandId: "zal_dezinfeksiya", text: "Zal: Idishlardan anjordan dezinfeksiya qilinishi" },
+  { bandId: "zal_hojatxona_pol_dez", text: "Zal: Hojatxonalarda pollarni dezinfeksiya qilish" },
+  { bandId: "zal_hojatxona_tozalik", text: "Zal: Hojatxonalarda tozalik (mijozdan keyin va smena oxirida tozalanishi)" },
+  { bandId: "zal_qol_yuvish", text: "Zal: Qo'l yuvish vositalari bor va soz" },
+  { bandId: "zal_hojatxona_vosita", text: "Zal: Hojatxona tozalik vositalari bor va soz" },
+  { bandId: "zal_hojatxona_eshik_yeli", text: "Zal: Hojatxona eshiklari yeli" },
+  { bandId: "zal_hojatxona_tozalik_vosita_2", text: "Zal: Hojatxona tozalik vositalari" },
+
+  { bandId: "personal_subheader", text: "Personal", subheader: true },
+  { bandId: "personal_kiyim_holati", text: "Personal: Xodimlar ish kiyimining holati" },
+  { bandId: "personal_kiyim", text: "Personal: Ish kiyimi, bosh kiyimi, poyafzali" },
+  { bandId: "personal_zargarlik", text: "Personal: Zargarlik va shunga o'xshash buyumlar bilan ishlash" },
+  { bandId: "personal_yurish", text: "Personal: Xodimlar xona bo'ylab yurishi (toshqovog'i bilan)" },
+  { bandId: "personal_kiyim_saqlash", text: "Personal: Xodimlar shaxsiy kiyimi va ish kiyimi saqlanishi" },
+  { bandId: "personal_qol_yuvish", text: "Personal: Ishga kirishishdan oldin qo'l yuvish qoidalariga rioya qilish" },
+
+  { bandId: "hudud_subheader", text: "Hudud", subheader: true },
+  { bandId: "hudud_tozalash_jixoz", text: "Hudud: Korsona ta'siri hududini tozalash jixozlari uchun joy" },
+  { bandId: "hudud_sanitariya", text: "Hudud: Sanitariya holati" },
+  { bandId: "hudud_deraza_tor", text: "Hudud: Ko'chaga qaragan derazalar haroratga qarshi to'r bilan to'qilganmi" },
+  { bandId: "hudud_dezinfeksiya", text: "Hudud: Hozirgi holatdagi dezinfeksiya va sanitariya tadbirlari holati" },
+  { bandId: "hudud_trotuar", text: "Hudud: Trotuar va ariqlar tozaligi" },
+  { bandId: "hudud_dezinfeksiya_talab", text: "Hudud: Tozalash uchun dezinfeksiya talabga javob berishi (maydoni, tozalash)" }
+];
+
+// --- Global ---
+let currentFilialName = '';
+let allScores = {};
+
+function getColorClass(score) {
+  score = parseInt(score);
+  if (score === 3) return 'green';
+  if (score === 2) return 'yellow';
+  if (score === 1 || score === 0) return 'red';
+  return 'default';
+}
+
+function updatePercentage() {
+  let totalScore = 0;
+  let maxPossibleScore = 0;
+
+  document.querySelectorAll('tr[data-band-id]').forEach(row => {
+    maxPossibleScore += 3;
+    const scoreInput = row.querySelector('.score-input');
+    const score = scoreInput ? parseInt(scoreInput.value) : NaN;
+    if (!isNaN(score)) totalScore += score;
+  });
+
+  const finalPercentage = maxPossibleScore > 0 ? (totalScore / maxPossibleScore) * 100 : 0;
+
+  document.getElementById('totalPercentHeader').textContent = `Umumiy Foiz: ${finalPercentage.toFixed(2)}%`;
+  document.getElementById('hiddenTotalPercentage').value = finalPercentage.toFixed(2);
+}
+
+function createScoreInput(bandId, tdElement) {
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'score-input';
+  input.min = '0';
+  input.max = '3';
+  input.placeholder = '0-3';
+  input.name = `score_${bandId}`;
+  input.id = `score_${bandId}`;
+
+  input.addEventListener('input', function() {
+    let score = this.value.trim();
+    if (score !== '' && (parseInt(score) < 0 || parseInt(score) > 3 || score.length > 1)) {
+      this.value = '';
+      score = '';
+    }
+
+    tdElement.classList.remove('green', 'yellow', 'red', 'default');
+    tdElement.classList.add(getColorClass(score));
+
+    if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
+    allScores[bandId].score = score;
+    setInvalidState(this, this.value.trim() === '');
+
+    updatePercentage();
+  });
+
+  tdElement.appendChild(input);
+  tdElement.classList.add('default');
+
+  if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
+}
+
+function createImageUploaders(bandId, tdElement) {
+  const inputContainer = document.createElement('div');
+  inputContainer.classList.add('image-container');
+  inputContainer.id = `input_container_${bandId}`;
+
+  const previewContainer = document.createElement('div');
+  previewContainer.classList.add('image-preview-container');
+  previewContainer.id = `preview_container_${bandId}`;
+
+  const i = 1;
+
+  const label = document.createElement('label');
+  label.textContent = `Rasm yuklash:`;
+  label.htmlFor = `image_${bandId}_${i}`;
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.name = `image_${bandId}_${i}`;
+  input.id = `image_${bandId}_${i}`;
+  input.setAttribute('capture', 'environment'); // ✅ telefon bo‘lsa orqa kamera
+
+
+  input.addEventListener('change', function(e) {
+    handleImageUpload(e, bandId, i, previewContainer, inputContainer, input);
+  });
+
+  inputContainer.appendChild(label);
+  inputContainer.appendChild(input);
+
+  tdElement.appendChild(inputContainer);
+  tdElement.appendChild(previewContainer);
+}
+
+function handleImageUpload(e, bandId, index, previewContainer, inputContainer, fileInput) {
+  const file = e.target.files[0];
+  const maxFileSize = 5 * 1024 * 1024;
+
+  previewContainer.innerHTML = '';
+
+  if (file) {
+    if (!file.type.startsWith('image/')) {
+      alert('Faqat rasm fayllarini yuklang!');
+      e.target.value = '';
+      return;
+    }
+    if (file.size > maxFileSize) {
+      alert('Rasm hajmi 5MB dan oshmasligi kerak!');
+      e.target.value = '';
+      return;
+    }
+
+    inputContainer.style.display = 'none';
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('image-preview-wrapper');
+      wrapper.id = `wrapper_${bandId}_${index}`;
+
+      const img = document.createElement('img');
+      img.src = event.target.result;
+      img.classList.add('image-preview');
+
+      const deleteBtn = document.createElement('div');
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.textContent = 'X';
+
+      deleteBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        previewContainer.innerHTML = '';
+        inputContainer.style.display = 'block';
+      });
+
+      wrapper.appendChild(img);
+      wrapper.appendChild(deleteBtn);
+      previewContainer.appendChild(wrapper);
+    };
+    reader.readAsDataURL(file);
+
+  } else {
+    inputContainer.style.display = 'block';
+  }
+}
+
+function populateTable() {
+  const tbody = document.getElementById('audit-body');
+  tbody.innerHTML = '';
+
+  AUDIT_DATA.forEach(data => {
+    const row = document.createElement('tr');
+
+    if (data.subheader) {
+      row.classList.add('subheader-row');
+      row.innerHTML = `<th colspan="3">${data.text}</th>`;
+    } else {
+      row.setAttribute('data-band-id', data.bandId);
+
+      const bandTd = document.createElement('td');
+      bandTd.textContent = data.text;
+      row.appendChild(bandTd);
+
+      const scoreTd = document.createElement('td');
+      scoreTd.classList.add('score-column');
+      createScoreInput(data.bandId, scoreTd);
+      row.appendChild(scoreTd);
+
+      const imageTd = document.createElement('td');
+      imageTd.classList.add('image-column');
+      createImageUploaders(data.bandId, imageTd);
+      row.appendChild(imageTd);
+    }
+
+    tbody.appendChild(row);
+  });
+
+  updatePercentage();
+}
+
+// Start button
+document.getElementById('startAuditBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  const inputElement = document.getElementById('filialInput');
+  const filialName = inputElement.value.trim();
+
+  if (filialName) {
+    currentFilialName = filialName;
+    document.getElementById('hiddenFilialName').value = filialName;
+
+    document.getElementById('filialInputOverlay').style.display = 'none';
+    document.getElementById('mainTitle').textContent = `${currentFilialName} Filiali Auditi Formasi`;
+    document.getElementById('mainTitle').style.display = 'block';
+    document.getElementById('auditForm').style.display = 'block';
+
+    populateTable();
+  } else {
+    alert("Iltimos, filial nomini kiriting.");
+    inputElement.focus();
+  }
+});
+
+// Submit (fetch)
+
+
+{% comment %} 
+document.getElementById('auditForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  fetch(this.action, {
+    method: 'POST',
+    body: formData,
+    headers: { 'X-CSRFToken': csrfToken }
+  })
+  .then(response => {
+    if (response.ok) return response.text();
+    return response.text().then(text => { throw new Error(text || `Status: ${response.status}`); });
+  })
+  .then(() => {
+    window.location.href = successUrl;
+  })
+  .catch(error => {
+    console.error('Xatolik:', error);
+    alert('❌ Ma\'lumotlarni saqlashda xatolik yuz berdi:\n' + error.message);
+  });
+});
+ {% endcomment %}
+
+function setInvalidState(inputEl, isInvalid) {
+  inputEl.classList.toggle('invalid', isInvalid);
+  const td = inputEl.closest('td');
+  if (td) td.classList.toggle('invalid-cell', isInvalid);
+}
+
+document.getElementById('auditForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const scoreInputs = Array.from(document.querySelectorAll('.score-input'));
+
+  // 1) Oldingi invalid belgilarini tozalaymiz
+  scoreInputs.forEach(inp => setInvalidState(inp, false));
+
+  // 2) Birinchi bo‘sh inputni topamiz
+  const firstEmpty = scoreInputs.find(inp => inp.value.trim() === '');
+
+  // 3) Bo‘sh bo‘lsa: ogohlantirishsiz o‘sha joyga olib boramiz va qizil qilib qo‘yamiz
+  if (firstEmpty) {
+    setInvalidState(firstEmpty, true);
+    firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // fokusni biroz kechiktirish (scroll tugab ulgurishi uchun)
+    setTimeout(() => firstEmpty.focus(), 250);
+    return;
+  }
+
+  // 4) Hammasi to‘ldirilgan bo‘lsa – yuboramiz
+  const formData = new FormData(this);
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  fetch(this.action, {
+    method: 'POST',
+    body: formData,
+    headers: { 'X-CSRFToken': csrfToken }
+  })
+  .then(r => {
+    if (!r.ok) throw new Error('Xatolik yuz berdi');
+    return r.text();
+  })
+  .then(() => window.location.href = successUrl)
+  .catch(err => console.error(err));
+});
+
+
+
+
+
+// Enter -> start
+document.getElementById('filialInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById('startAuditBtn').click();
+  }
+});
+// overlay ochiq bo'lsa base action-barni yashiramiz
+const baseActionBar = document.querySelector('.action-bar');
+const overlay = document.getElementById('filialInputOverlay');
+
+function toggleBaseBar() {
+  if (!baseActionBar || !overlay) return;
+  baseActionBar.style.display = (overlay.style.display !== 'none') ? 'none' : '';
+}
+toggleBaseBar();
+
+document.getElementById('startAuditBtn').addEventListener('click', () => {
+  // sizning mavjud logikangiz ishlaydi...
+  // overlay yopilgach base action-bar qaytib ko‘rinsin:
+  if (overlay) overlay.style.display = 'none';
+  toggleBaseBar();
+});
+
+</script>
+{% endblock %}

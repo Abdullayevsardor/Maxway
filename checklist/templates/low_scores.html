@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Past ballar (0-1){% endblock %}
+
+{% block extra_head %}
+<style>
+  body { font-family: Arial; background:#f4f6f7; padding:20px; }
+  .card { background:#fff; padding:14px; border-radius:10px; margin-bottom:14px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th, td { border:1px solid #ccc; padding:8px; vertical-align:top; }
+  th { background:#e9f2ff; }
+  .s0 { background:#ffdddd; font-weight:700; text-align:center; }
+  .s1 { background:#fff3cd; font-weight:700; text-align:center; }
+  .img { max-width:90px; max-height:120px; border:1px solid #ddd; border-radius:6px; }
+  .filters { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .filters input, .filters select { padding:8px; border-radius:8px; border:1px solid #ccc; }
+  .btn { padding:8px 14px; border:none; border-radius:8px; background:#2f7df6; color:#fff; cursor:pointer; }
+
+  /* ✅ Responsive qo‘shimcha (dizayn o‘zgarmaydi) */
+  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling: touch; }
+
+  @media (max-width: 768px) {
+    body { padding: 12px; }
+    h2 { font-size: 18px; }
+    .card { padding: 12px; }
+    th, td { padding: 6px; font-size: 13px; }
+    .img { max-width: 80px; max-height: 110px; }
+    .filters input, .filters select { width: 100%; }
+    .btn { width: 100%; }
+  }
+  
+  /* ✅ filters ichida ixcham: base.css dagi width:100% ni bosib ketadi */
+.filters select,
+.filters input[type="date"]{
+  width: auto !important;
+  min-width: 120px;
+  max-width: 160px;
+  padding-right: 12px; /* date icon yaqinroq ko‘rinsin */
+}
+
+/* telefonlarda esa 100% bo‘lib tursin */
+@media (max-width: 768px){
+  .filters select,
+  .filters input[type="date"]{
+    width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h2>Past ballar (0 va 1)</h2>
+
+<form class="filters" method="get">
+  <select name="filial">
+    <option value="all">Barcha filiallar</option>
+    {% for f in all_filials %}
+      <option value="{{ f }}" {% if selected_filial == f %}selected{% endif %}>{{ f }}</option>
+    {% endfor %}
+  </select>
+
+  <select name="score">
+    <option value="all" {% if selected_score == "all" %}selected{% endif %}>0 va 1</option>
+    <option value="0" {% if selected_score == "0" %}selected{% endif %}>faqat 0</option>
+    <option value="1" {% if selected_score == "1" %}selected{% endif %}>faqat 1</option>
+  </select>
+
+  <input type="date" name="from" value="{{ date_from }}">
+  <input type="date" name="to" value="{{ date_to }}">
+
+  <button class="btn" type="submit">Filter</button>
+</form>
+
+{% for a in audits %}
+  {% if a.low_details %}
+    <div class="card">
+      <div>
+        Filial: <b>{{ a.filial_nomi }}</b> |
+        Auditor: <b>{{ a.auditor|default:"-" }}</b> |
+        Sana: <b>{{ a.created_at|date:"d-m-Y H:i" }}</b>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Band</th>
+              <th style="width:70px;">Ball</th>
+              <th style="width:140px;">Rasm</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in a.low_details %}
+              <tr>
+                <td>{{ d.band_id }}</td>
+                <td class="{% if d.score == 0 %}s0{% else %}s1{% endif %}">{{ d.score }}</td>
+                <td>
+                  {% if d.image %}
+                    <img class="img" src="{{ d.image.url }}" />
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
+
+{% endblock %}
