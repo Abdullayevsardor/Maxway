@@ -1,0 +1,1 @@
+web: gunicorn "Filial_score-main.wsgi"
