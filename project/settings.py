@@ -31,7 +31,7 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # DEBUG ni ham productionda False qilish kerak
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 GLOBAL_WORKER_PIN = os.getenv("GLOBAL_WORKER_PIN")
@@ -156,4 +156,8 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# O'z loyihangiz manzilini yozing
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-447d0.up.railway.app/'
+]
 
