@@ -31,16 +31,12 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # DEBUG ni ham productionda False qilish kerak
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "0") == "1"
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
 GLOBAL_WORKER_PIN = os.getenv("GLOBAL_WORKER_PIN")
 
-# CSRF xavfsizligi uchun ishonchli domenlar ro'yxati
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-]
 
 # Nginx orqali kelayotgan proxy so'rovlarni to'g'ri qabul qilish uchun
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -95,9 +91,13 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 
 DATABASES = {
-     
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=not DEBUG,
+    )
 }
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -159,6 +159,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # O'z loyihangiz manzilini yozing
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-447d0.up.railway.app/'
+    'https://web-production-447d0.up.railway.app'
 ]
 
