@@ -559,89 +559,64 @@ function populateTable() {
 // Start button
 document.getElementById('startAuditBtn').addEventListener('click', (e) => {
   e.preventDefault();
+
   const inputElement = document.getElementById('filialInput');
   const filialName = inputElement.value.trim();
 
-  if (filialName) {
-    currentFilialName = filialName;
-    document.getElementById('hiddenFilialName').value = filialName;
-
-    document.getElementById('filialInputOverlay').style.display = 'none';
-    document.getElementById('mainTitle').textContent = `${currentFilialName} Filiali Auditi Formasi`;
-    document.getElementById('mainTitle').style.display = 'block';
-    document.getElementById('auditForm').style.display = 'block';
-
-    populateTable();
-  } else {
+  if (!filialName) {
     alert("Iltimos, filial nomini kiriting.");
     inputElement.focus();
+    return; // ⛔ ochilmaydi
   }
+
+  currentFilialName = filialName;
+  document.getElementById('hiddenFilialName').value = filialName;
+
+  document.getElementById('filialInputOverlay').style.display = 'none';
+  toggleBaseBar();
+
+  document.getElementById('mainTitle').textContent =
+    `${currentFilialName} Filiali Auditi Formasi`;
+  document.getElementById('mainTitle').style.display = 'block';
+  document.getElementById('auditForm').style.display = 'block';
+
+  populateTable();
 });
 
 // Submit (fetch)
 
 
-{% comment %} 
-document.getElementById('auditForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  const formData = new FormData(this);
-  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-  fetch(this.action, {
-    method: 'POST',
-    body: formData,
-    headers: { 'X-CSRFToken': csrfToken }
-  })
-  .then(response => {
-    if (response.ok) return response.text();
-    return response.text().then(text => { throw new Error(text || `Status: ${response.status}`); });
-  })
-  .then(() => {
-    window.location.href = successUrl;
-  })
-  .catch(error => {
-    console.error('Xatolik:', error);
-    alert('❌ Ma\'lumotlarni saqlashda xatolik yuz berdi:\n' + error.message);
-  });
-});
- {% endcomment %}
+ 
 
 function setInvalidState(inputEl, isInvalid) {
   inputEl.classList.toggle('invalid', isInvalid);
   const td = inputEl.closest('td');
   if (td) td.classList.toggle('invalid-cell', isInvalid);
 }
-
 document.getElementById('auditForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
   const scoreInputs = Array.from(document.querySelectorAll('.score-input'));
-
-  // 1) Oldingi invalid belgilarini tozalaymiz
   scoreInputs.forEach(inp => setInvalidState(inp, false));
 
-  // 2) Birinchi bo‘sh inputni topamiz
-  const firstEmpty = scoreInputs.find(inp => inp.value.trim() === '');
+  // const firstEmpty = scoreInputs.find(inp => inp.value.trim() === '');
+  // if (firstEmpty) {
+  //   setInvalidState(firstEmpty, true);
+  //   firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //   setTimeout(() => firstEmpty.focus(), 250);
+  //   return;
+  // }
 
-  // 3) Bo‘sh bo‘lsa: ogohlantirishsiz o‘sha joyga olib boramiz va qizil qilib qo‘yamiz
-  if (firstEmpty) {
-    setInvalidState(firstEmpty, true);
-    firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // fokusni biroz kechiktirish (scroll tugab ulgurishi uchun)
-    setTimeout(() => firstEmpty.focus(), 250);
-    return;
-  }
-
-  // 4) Hammasi to‘ldirilgan bo‘lsa – yuboramiz
   const formData = new FormData(this);
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
   fetch(this.action, {
     method: 'POST',
     body: formData,
-    headers: { 'X-CSRFToken': csrfToken }
+    headers: {
+      'X-CSRFToken': csrfToken
+    },
+    credentials: 'same-origin' // ✅ SHART
   })
   .then(r => {
     if (!r.ok) throw new Error('Xatolik yuz berdi');
@@ -650,7 +625,6 @@ document.getElementById('auditForm').addEventListener('submit', function(e) {
   .then(() => window.location.href = successUrl)
   .catch(err => console.error(err));
 });
-
 
 
 
@@ -672,12 +646,6 @@ function toggleBaseBar() {
 }
 toggleBaseBar();
 
-document.getElementById('startAuditBtn').addEventListener('click', () => {
-  // sizning mavjud logikangiz ishlaydi...
-  // overlay yopilgach base action-bar qaytib ko‘rinsin:
-  if (overlay) overlay.style.display = 'none';
-  toggleBaseBar();
-});
-
+ 
 </script>
 {% endblock %}

@@ -21,6 +21,7 @@ env/
 
 # Ma'lumotlar bazasi
 *.sqlite3
+mydatabase
 
 # IDE/OS Fayllari
 .DS_Store
