@@ -75,7 +75,7 @@ class AuditDetail(models.Model):
     
     audit = models.ForeignKey(Audit, on_delete=models.CASCADE, related_name='details', verbose_name="Audit")
     
-    band_id = models.CharField(max_length=10, verbose_name="Band IDsi (Savol)") # Masalan: '01', '02', '03'
+    band_id = models.CharField(max_length=255, verbose_name="Band IDsi (Savol)") # Masalan: '01', '02', '03'
     score = models.IntegerField(verbose_name="Kiritilgan Ball (0-3)")
     # Rasmlar 'uploads/audit_images/' papkasiga saqlanadi
     image = models.ImageField(upload_to='audit_images/', null=True, blank=True, verbose_name="Rasm")    
