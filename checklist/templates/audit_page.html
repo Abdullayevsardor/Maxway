@@ -28,60 +28,148 @@
            class="pdf">PDF Export</a>
     </div>
 </form>
-<!-- ================= DESKTOP TABLE ================= -->
-<div class="desktop-only">
-  <table class="audit-table">
+
+<table>
     <thead>
-      <tr>
-        <th>Filial</th>
-        <th>Foiz</th>
-        <th>Sana</th>
-        <th>Amallar</th>
-      </tr>
+        <tr>
+            <th>Filial nomi</th>
+            <th>Umumiy foiz</th>
+            <th>Sana</th>
+            <th>Amallar</th>
+        </tr>
     </thead>
+
     <tbody>
-      {% for audit in audits %}
-      <tr>
-        <td>
-          <a href="{% url 'audit_filial_detail' audit.filial_nomi %}">
-            {{ audit.filial_nomi }}
-          </a>
-        </td>
-        <td>{{ audit.percent }}%</td>
-        <td>{{ audit.created_at|date:"Y-m-d H:i" }}</td>
-        <td>
-          <form method="POST" action="{% url 'audit_delete' audit.id %}"
-                onsubmit="return confirm('Rostdan ham o‘chirmoqchimisiz?');">
-            {% csrf_token %}
-            <button type="submit" class="danger-btn">O‘chirish</button>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
+        {% for audit in audits %}
+        <tr>
+            <td>
+                <a href="{% url 'audit_filial_detail' audit.filial_nomi %}">
+                    {{ audit.filial_nomi }}
+                </a>
+            </td>
+            <td>{{ audit.percent }}%</td>
+            <td>{{ audit.created_at|date:"Y-m-d H:i" }}</td>
+            <td>
+                <form method="POST" action="{% url 'audit_delete' audit.id %}"
+                      onsubmit="return confirm('Rostdan ham o‘chirmoqchimisiz?');">
+                    {% csrf_token %}
+                    <button type="submit"
+                            style="background:#f44336;color:white;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;">
+                        O‘chirish
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
     </tbody>
-  </table>
-</div>
-
-<!-- ================= MOBILE CARDS ================= -->
-<div class="mobile-only">
-  {% for audit in audits %}
-  <div class="audit-card">
-    <div><strong>Filial:</strong> {{ audit.filial_nomi }}</div>
-    <div><strong>Foiz:</strong> {{ audit.percent }}%</div>
-    <div><strong>Sana:</strong> {{ audit.created_at|date:"Y-m-d H:i" }}</div>
-
-    <a href="{% url 'audit_filial_detail' audit.filial_nomi %}"
-       class="card-link">Batafsil</a>
-
-    <form method="POST" action="{% url 'audit_delete' audit.id %}"
-          onsubmit="return confirm('Rostdan ham o‘chirmoqchimisiz?');">
-      {% csrf_token %}
-      <button type="submit" class="danger-btn full">O‘chirish</button>
-    </form>
-  </div>
-  {% endfor %}
-</div>
+</table>
 
 {% endblock %}
 
- 
+
+{% block extra_head %}
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; background: #eef3f4; }
+h2 { text-align: center; margin-bottom: 20px; }
+
+
+.filters {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filters select, .filters input[type="date"] {
+    padding: 5px;
+    font-size: 16px;
+}
+
+.filters button {
+    padding: 5px 10px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filters a {
+    margin-left: auto;
+    padding: 5px 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.filters a.excel { background: #2196F3; }
+.filters a.pdf { background: #f44336; margin-left: auto; } */ */
+
+
+/* === FILTERS: ixcham chap burchak === */
+.filters{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.filters select,
+.filters input[type="date"]{
+  width:auto;          /* global 100% ni override */
+  max-width:160px;     /* ixcham */
+  min-width:120px;     /* juda kichrayib ketmasin */
+  padding-right:12px;  /* date icon yaqinroq ko‘rinsin */
+}
+
+/* telefonlarda baribir 100% bo‘lsin */
+@media (max-width: 600px){
+  .filters select,
+  .filters input[type="date"]{
+    width:100%;
+    max-width:100%;
+    min-width:0;
+  }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #999;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #d3edf4;
+    font-size: 16px;
+}
+
+td a {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.export-buttons {
+    justify-content: flex-end;
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+    max-width: fit-content;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+</style>
+{% endblock %}
