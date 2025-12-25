@@ -639,7 +639,7 @@ const overlay = document.getElementById('filialInputOverlay');
 
 function toggleBaseBar() {
   if (!baseActionBar || !overlay) return;
-  baseActionBar.style.display = (overlay.style.display !== 'none') ? 'none' : '';
+  baseActionBar.style.display = (overlay.style.display == 'none') ? 'none' : '';
 }
 toggleBaseBar();
 
