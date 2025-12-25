@@ -126,7 +126,7 @@ th { background: #d3edf4; }
                 <td>
                   {% if band.images %}
                     {% for image in band.images %}
-                      <img src="{{ image.url }}"
+                      <img src="{{ image }}"
                            class="image-preview"
                            onclick="openImageModal(this.src)" />
                     {% endfor %}
