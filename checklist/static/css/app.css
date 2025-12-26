@@ -159,15 +159,18 @@ th { background: #e9f2ff; }
   gap: 10px;
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .action-bar {
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    justify-content: center;
-    z-index: 100;
+    position: fixed;   /* Ekranning bir joyida qotib turadi (skroll bo'lsa ham joyidan jilmaydi) */
+    left: 10px;        /* Chapdan bo'shliq */
+    right: 10px;       /* O'ngdan bo'shliq */
+    bottom: 10px;      /* Pastdan 10px tepada turadi (suzib turgandek ko'rinadi) */
+    z-index: 999;      /* Hamma narsadan ustki qatlamda turadi */
+    background: rgba(255,255,255,.95); /* Orqa foni oppoq va biroz shaffof */
+    border-radius: 14px; /* Burchaklari yumaloq */
+    display: flex;     /* Tugmalarni yonma-yon tizish uchun */
+    justify-content: space-between; /* Tugmalarni bar ichiga teng taqsimlaydi */
+    box-shadow: 0 10px 30px rgba(0,0,0,.18); /* Soyasi (chiroyli effekt beradi) */
   }
 }
   
@@ -199,12 +202,12 @@ th { background: #e9f2ff; }
     justify-content: space-between; /* 2-3 knopka bo‘lsa chiroyli */
   }
 
-  .action-bar .abtn {
-    flex: 1 1 auto;        /* bar ichida teng bo‘linadi */
-    min-height: 44px;      /* barmoq uchun qulay */
-    font-size: 13px;
-    padding: 10px 10px;
-  }
+.action-bar .abtn {
+  flex: 1 1 auto;  /* Tugmalar mavjud joyni teng bo'lishib oladi (ekran kengligiga qarab) */
+  min-height: 44px; /* Eng muhimi! Inson barmog'i bemalol tegishi uchun minimal balandlik */
+  font-size: 13px;  /* Matn mobilda sig'ishi uchun biroz kichraytirilgan */
+  text-align: center;
+}
 }
 
 /* =========================
@@ -212,7 +215,9 @@ th { background: #e9f2ff; }
 ========================= */
 @media (max-width: 768px){
   .topbar-inner, .container { padding-left: 12px; padding-right: 12px; }
-  table { min-width: 700px; }
+  table { min-width: 100%; 
+    width: 100%;
+  }  /* <--- MANA SHU QATOR */
   th, td { padding: 6px; font-size: 13px; }
 }
 
