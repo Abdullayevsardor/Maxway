@@ -30,14 +30,7 @@ h1 { text-align: center; color: #333; margin-bottom: 18px; }
   padding: 16px;
 }
 #filialInputBox {
-  /* overflow: hidden; 
-  background: rgb(244, 247, 248);
-  width: 100%;
-  max-width: 400px;
-  padding: 18px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
-  text-align: center; */
+   
   width: 95%; /* Ekran chetidan 5% joy qolsin */
   max-width: 400px;
   padding: 20px;
@@ -198,7 +191,31 @@ td.score-column.invalid-cell {
         max-height: 80px;
     }
 }
+input[type="file"] {
+    max-width: 100%;
+    font-size: 11px;
+    padding: 2px;
+    display: block;
+    overflow: hidden;
+    color: transparent; /* "Файл не выбран" yozuvini yashirish uchun (ixtiyoriy) */
+}
 
+input[type="file"]::-webkit-file-upload-button {
+    font-size: 10px; /* Tugmaning o'zini ichidagi yozuvni kichraytirish */
+}
+
+@media (max-width: 480px) {
+    .image-column {
+        width: 35% !important; /* Ustunni biroz kengaytirdik */
+    }
+    input[type="file"] {
+        font-size: 10px;
+    }
+    /* Jadval sig'ishi uchun majburiy qoida */
+    table {
+        min-width: 100% !important; 
+    }
+}
 
 </style>
 {% endblock %}
