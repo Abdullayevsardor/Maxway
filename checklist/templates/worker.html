@@ -194,24 +194,28 @@ td.score-column.invalid-cell {
 
 
 input[type="file"] {
-    max-width: 100%;
+    max-width: 50%;
     font-size: 11px;
     padding: 2px;
     display: block;
     overflow: hidden;
     color: transparent; /* "Файл не выбран" yozuvini yashirish uchun (ixtiyoriy) */
+    
 }
 
 input[type="file"]::-webkit-file-upload-button {
     font-size: 10px; /* Tugmaning o'zini ichidagi yozuvni kichraytirish */
+    margin-top: 8px;    /* Tugmani yozuvdan pastga suradi */
+    margin-bottom: 5px; /* Pastki chiziqqa yopishib qolmasligi uchun */
+    padding: 3px 2;    /* Tugma ichidagi bo'shliq */
 }
 
 @media (max-width: 480px) {
     .image-column {
-        width: 25% !important; /* Ustunni biroz kengaytirdik */
+        width: 5% !important; /* Ustunni biroz kengaytirdik */
     }
     input[type="file"] {
-        font-size: 10px;
+        font-size: 0px;
     }
     /* Jadval sig'ishi uchun majburiy qoida */
     table {
