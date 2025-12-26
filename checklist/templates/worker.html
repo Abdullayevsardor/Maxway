@@ -30,14 +30,22 @@ h1 { text-align: center; color: #333; margin-bottom: 18px; }
   padding: 16px;
 }
 #filialInputBox {
-  overflow: hidden; 
+  /* overflow: hidden; 
   background: rgb(244, 247, 248);
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
   padding: 18px;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
-  text-align: center;
+  text-align: center; */
+  width: 95%; /* Ekran chetidan 5% joy qolsin */
+  max-width: 400px;
+  padding: 20px;
+  margin: 0 auto;
+}
+#filialInput {
+    height: 50px; /* Barmoq bilan bosish oson bo'lishi uchun */
+    font-size: 18px; /* iOS-da zoom bo'lib ketmasligi uchun (16px+ bo'lishi shart) */
 }
 #filialInputBox h2 { margin: 0 0 10px; }
 #filialInput {
@@ -62,7 +70,7 @@ h1 { text-align: center; color: #333; margin-bottom: 18px; }
 
 /* Jadval */
 .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; min-width: 780px; background: #fff; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 16px; min-width: 100%; background: #fff; }
 th, td {
   border: 1px solid #161717;
   padding: 8px;
@@ -172,16 +180,24 @@ td.score-column.invalid-cell {
   color: #000;
 }
 
-/* Telefon uchun yanada ixcham */
-@media (max-width: 480px) {
-  .overlay-actions {
-    flex-direction: column;
-  }
-  .overlay-actions .o-btn {
-    width: 100%;
-  }
-}
+/* Mobil uchun maxsus tweaklar */
+@media (max-width: 600px) {
+    th, td {
+        padding: 5px 2px; /* Bo'shliqni kamaytirdik */
+        font-size: 11px;  /* Shriftni kichraytirdik */
+    }
+    
+    .score-input {
+        width: 100%; /* Ball kiritish joyi katakni to'ldirsin */
+        font-size: 14px;
+        padding: 4px 0;
+    }
 
+    .image-preview {
+        max-width: 60px; /* Rasmlarni kichraytirdik */
+        max-height: 80px;
+    }
+}
 
 
 </style>
