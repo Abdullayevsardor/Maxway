@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-
 {% block title %}Audit Natijalari{% endblock %}
-{% block navigation_bar %}{% endblock %}
+
 {% block content %}
 
 <h2>Audit natijalari</h2>
@@ -17,6 +16,7 @@
     <input type="date" name="from" value="{{ request.GET.from }}">
     <input type="date" name="to" value="{{ request.GET.to }}">
     <button type="submit">Filtrlash</button>
+    
 
     <div class="export-buttons">
         <!-- Excel Export -->
@@ -27,7 +27,6 @@
         <a href="{% url 'audit_export_pdf' %}?{% if request.GET.filial %}filial={{ request.GET.filial }}&{% endif %}{% if request.GET.from %}from={{ request.GET.from }}&{% endif %}{% if request.GET.to %}to={{ request.GET.to }}{% endif %}"
            class="pdf">PDF Export</a>
     </div>
-    <div class="export-buttons"> ... </div>
 
     <div class="action-bar custom-position" style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
         <a href="{% url 'audit_form' %}" class="abtn audit" 
@@ -43,7 +42,6 @@
            ⬅ Orqaga
         </button>
     </div>
-</form>
 </form>
 <div class="table-container">
     <table>
@@ -89,7 +87,9 @@
   /* Umumiy dizayn */
   body { font-family: Arial, sans-serif; background:#f4f6f7; padding:20px; margin: 0; }
   h2 { text-align: center; color: #333; margin-bottom: 20px; }
-
+/* .action-bar {
+  display: none !important;
+} */
   /* Card va Filial ma'lumotlari */
   .card { 
     background:#fff; 

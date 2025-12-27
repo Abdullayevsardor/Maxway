@@ -2,14 +2,27 @@
 {% load static %}
 
 {% block title %}Audit Formasi{% endblock %}
-
 {% block extra_head %}
+
 <style>
 *, *::before, *::after { box-sizing: border-box; }
 
 /* Umumiy stil */
-body { font-family: Arial, sans-serif; background-color: #eef3f4; }
+body { font-family: Arial, sans-serif; background-color: #eef3f4 !important; margin: 0; padding: 0px; }
 h1 { text-align: center; color: #333; margin-bottom: 18px; }
+
+/* Agar navigatsiya paneli o'chmasa, uni majburan yashirish */
+.action-bar {
+  display: none !important;
+}
+
+/* Markazdagi formani ko'rinadigan qilish */
+.container {
+  background: transparent;
+  position: relative;
+  z-index: 10; /* Kontent fonning ustida turishi uchun */
+}
+
 
 /* Audit form container */
 .audit-card {
@@ -239,7 +252,8 @@ input[type="file"]::-webkit-file-upload-button {
     <button type="button" id="startAuditBtn">
       Auditni boshlash
     </button>
-    <div class="top-nav-buttons" style="display: flex; gap: 10px; margin-bottom: 15px;">
+    <p></p>
+    <div class="top-nav-buttons" style="display: flex; gap: 10px;  margin-bottom: 15px;">
         {% if request.user.is_authenticated %}
             <a href="{% url 'audit_page' %}" class="o-btn" style="flex: 1; text-align: center; background: #ced2d6; padding: 10px; border-radius: 10px; text-decoration: none; color: #000;">📊 Natijalar</a>
             <a href="{% url 'low_scores' %}" class="o-btn warning" style="flex: 1; text-align: center; background: #ced2d6; padding: 10px; border-radius: 10px; text-decoration: none; color: #000;">⚠ Past ballar</a>
