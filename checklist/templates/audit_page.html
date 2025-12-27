@@ -69,107 +69,105 @@
 
 {% block extra_head %}
 <style>
-body { font-family: Arial, sans-serif; padding: 20px; background: #eef3f4; }
-h2 { text-align: center; margin-bottom: 20px; }
+/* 1. Umumiy asoslar */
+body { font-family: Arial, sans-serif; padding: 15px; background: #eef3f4; margin: 0; }
+h2 { text-align: center; margin-bottom: 20px; font-size: 1.4rem; }
 
-
+/* 2. Filtrlar qatorini to'g'irlash */
 .filters {
-    margin-bottom: 20px;
     display: flex;
-    gap: 10px;
     flex-wrap: wrap;
+    gap: 10px;
     align-items: center;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
 }
 
-.filters select, .filters input[type="date"] {
-    padding: 5px;
-    font-size: 16px;
+/* 3. Inputlar va Selectlar */
+.filters select, 
+.filters input[type="date"] {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    flex: 1 1 140px; /* Mobilda moslashuvchan, lekin juda kichik emas */
 }
 
 .filters button {
-    padding: 5px 10px;
+    padding: 10px 15px;
     background: #4CAF50;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-weight: bold;
+    flex: 1 1 100%; /* Mobilda tugma to'liq kenglikda */
 }
 
-.filters a {
-    margin-left: auto;
-    padding: 5px 10px;
+/* 4. Eksport tugmalari */
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%; /* Mobilda to'liq kenglik */
+    margin-top: 5px;
+}
+
+.export-buttons a {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
     color: white;
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
 }
 
-.filters a.excel { background: #2196F3; }
-.filters a.pdf { background: #f44336; margin-left: auto; } */ */
+.export-buttons a.excel { background: #2196F3; }
+.export-buttons a.pdf { background: #f44336; }
 
-
-/* === FILTERS: ixcham chap burchak === */
-.filters{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.filters select,
-.filters input[type="date"]{
-  width:auto;          /* global 100% ni override */
-  max-width:160px;     /* ixcham */
-  min-width:120px;     /* juda kichrayib ketmasin */
-  padding-right:12px;  /* date icon yaqinroq ko‘rinsin */
-}
-
-/* telefonlarda baribir 100% bo‘lsin */
-@media (max-width: 600px){
-  .filters select,
-  .filters input[type="date"]{
-    width:100%;
-    max-width:100%;
-    min-width:0;
-  }
-}
-
+/* 5. Jadvalni mobilga moslash */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 th, td {
-    border: 1px solid #999;
-    padding: 10px;
+    border: 1px solid #ddd;
+    padding: 10px 5px;
     text-align: center;
+    font-size: 13px;
 }
 
 th {
     background: #d3edf4;
-    font-size: 16px;
+    font-weight: bold;
 }
 
 td a {
-    font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: #2196F3;
     text-decoration: none;
 }
 
-.export-buttons {
-    justify-content: flex-end;
-    margin-left: auto;
-    display: flex;
-    gap: 10px;
-    max-width: fit-content;
-}
+/* 6. Faqat mobil uchun (maxsus tweaklar) */
+@media (max-width: 600px) {
+    .filters { padding: 10px; gap: 8px; }
+    
+    /* Jadvalning ba'zi ustunlarini biroz qisqartirish */
+    th, td { font-size: 12px; }
+    
+    /* Sana ustunini sig'dirish uchun */
+    td:nth-child(3) { font-size: 11px; }
 
-.filters {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    /* Tugma hover effektlari mobilda shart emas */
+    .filters button:active { transform: scale(0.98); }
 }
 </style>
 {% endblock %}
