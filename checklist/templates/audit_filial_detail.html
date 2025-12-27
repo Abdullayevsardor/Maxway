@@ -3,7 +3,7 @@
 {% block title %}{{ filial_name }} - Audit Tafsilotlari{% endblock %}
 
 {% block extra_head %}
-<style>
+<!-- <style>
   /* Umumiy dizayn */
   body { font-family: Arial, sans-serif; background:#f4f6f7; padding:20px; margin: 0; }
   h2 { text-align: center; color: #333; margin-bottom: 20px; }
@@ -124,7 +124,143 @@
     display: none; /* Standart holatda yashirin */
     display: flex; /* JavaScript orqali block emas, flex qilinadi */
 }
+</style> -->
+
+<style>
+  /* Umumiy dizayn */
+  body { font-family: Arial, sans-serif; background:#f4f6f7; padding:20px; margin: 0; }
+  h2 { text-align: center; color: #333; margin-bottom: 20px; }
+
+  /* Card va Filial ma'lumotlari */
+  .card { 
+    background:#fff; 
+    padding:16px; 
+    border-radius:12px; 
+    margin-bottom:16px; 
+    box-shadow:0 4px 12px rgba(0,0,0,.08); 
+  }
+  
+  .card-info {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    color: #555;
+  }
+ 
+
+
+  /* Filtrlar qismi */
+  .filters { 
+    display: flex; 
+    gap: 10px; 
+    flex-wrap: wrap; 
+    margin-bottom: 20px; 
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+  }
+  .filters select, .filters input[type="date"] { 
+    flex: 1 1 120px; /* Mobilda moslashuvchan kenglik */
+    padding: 10px; 
+    border-radius: 8px; 
+    border: 1px solid #ccc; 
+    font-size: 14px;
+  }
+
+
+   
+
+
+
+  .btn { 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 8px; 
+    background: #2f7df6; 
+    color: #fff; 
+    cursor: pointer; 
+    font-weight: bold;
+    flex: 1 1 100%; /* Mobilda tugma to'liq kenglikda */
+  }
+
+  /* Jadval sig'ishi uchun qat'iy qoidalar */
+  .table-wrap { 
+    width: 100%; 
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch; 
+  }
+ 
+
+
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px; 
+    min-width: 320px; /* Telefon kengligidan kichik bo'lmasligi uchun */
+  }
+  th, td { 
+    border: 1px solid #eee; 
+    padding: 8px; 
+    vertical-align: middle; 
+    font-size: 13px;
+    text-align: center;
+  }
+  th { background:#e9f2ff; color: #333; }
+  
+  /* Band nomi chapga tekislansin */
+  td:first-child, th:first-child { text-align: left; }
+
+  /* Ballar ranglari */
+  .s0 { background:#ffdddd; font-weight:700; color: #d9534f; }
+  .s1 { background:#fff3cd; font-weight:700; color: #8a6d3b; }
+  
+  /* Rasmlar */
+  .img { 
+    max-width: 70px; 
+    max-height: 90px; 
+    border: 1px solid #ddd; 
+    border-radius: 6px; 
+    object-fit: cover;
+  }
+
+  /* ✅ Mobile Tweaklar (Struktura o'zgarmaydi) */
+  @media (max-width: 600px) {
+    body { padding: 10px; }
+    h2 { font-size: 1.3rem; }
+    .card { padding: 12px; }
+    
+    /* Filial ma'lumotlarini ustma-ust qilish */
+    .card-info b { display: inline-block; margin-bottom: 2px; }
+    
+    th, td { padding: 6px 4px; font-size: 12px; }
+    
+    .img { max-width: 60px; max-height: 80px; }
+
+    /* Filtrlarni to'liq kenglikka yoyish */
+    .filters select, .filters input[type="date"] {
+      flex: 1 1 100%;
+    }
+  }
+
+
+
+
+
+.img { 
+    cursor: zoom-in; 
+    transition: transform 0.2s; 
+}
+.img:hover { 
+    transform: scale(1.05); /* Bosishdan oldin biroz kattalashadi */
+}
+
+/* Modal ochilganda markazda turishi uchun */
+#imageModal {
+    display: none; /* Standart holatda yashirin */
+    display: flex; /* JavaScript orqali block emas, flex qilinadi */
+}
 </style>
+
 {% endblock %}
 
 {% block content %}

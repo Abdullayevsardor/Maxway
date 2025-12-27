@@ -14,7 +14,10 @@
 </head>
 
 <body>
-   {% if request.user.is_authenticated and show_action_bar %}
+ 
+  <main class="container">
+    {% block content %}{% endblock %}
+     {% if request.user.is_authenticated and show_action_bar %}
     {% with current=request.resolver_match.url_name %}
     <div class="action-bar">
 
@@ -50,12 +53,6 @@
   
   {% endwith %}
 {% endif %}
-
-
-
-    
-  <main class="container">
-    {% block content %}{% endblock %}
   </main>
 
   <script src="{% static 'js/app.js' %}">

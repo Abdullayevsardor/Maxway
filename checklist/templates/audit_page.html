@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Audit Natijalari{% endblock %}
-
+{% block navigation_bar %}{% endblock %}
 {% block content %}
 
 <h2>Audit natijalari</h2>
@@ -27,6 +27,23 @@
         <a href="{% url 'audit_export_pdf' %}?{% if request.GET.filial %}filial={{ request.GET.filial }}&{% endif %}{% if request.GET.from %}from={{ request.GET.from }}&{% endif %}{% if request.GET.to %}to={{ request.GET.to }}{% endif %}"
            class="pdf">PDF Export</a>
     </div>
+    <div class="export-buttons"> ... </div>
+
+    <div class="action-bar custom-position" style="display: flex; gap: 8px; margin-top: 15px; width: 100%;">
+        <a href="{% url 'audit_form' %}" class="abtn audit" 
+           style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; background: #2f7df6; color: white; text-decoration: none; font-size: 11px; font-weight: bold;">
+           ➕ Audit
+        </a>
+        <a href="{% url 'low_scores' %}" class="abtn warning" 
+           style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; background: #ffc107; color: black; text-decoration: none; font-size: 11px; font-weight: bold;">
+           ⚠ Past ballar
+        </a>
+        <button type="button" class="abtn" onclick="history.back()" 
+                style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; background: #6c757d; color: white; border: none; font-size: 11px; font-weight: bold; cursor: pointer;">
+           ⬅ Orqaga
+        </button>
+    </div>
+</form>
 </form>
 <div class="table-container">
     <table>
