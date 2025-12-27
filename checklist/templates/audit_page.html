@@ -53,7 +53,7 @@
                     <form method="POST" action="{% url 'audit_delete' audit.id %}"
                         onsubmit="return confirm('Rostdan ham o‘chirmoqchimisiz?');">
                         {% csrf_token %}
-                        <button type="submit"
+                        <button type="submit" class="del-btn"
                                 style="background:#f44336;color:white;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;">
                             O‘chirish
                         </button>
@@ -170,6 +170,72 @@
     .filters select, .filters input[type="date"] {
       flex: 1 1 100%;
     }
+  }
+  /* ... avvalgi barcha body, card, card-info kodlari o'zgarishsiz qoladi ... */
+
+  /* ✅ Eksport tugmalari uchun yangi dizayn */
+  .export-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    width: 100%;
+  }
+  .export-buttons a {
+    flex: 1;
+    text-align: center;
+    padding: 8px 5px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    transition: opacity 0.2s;
+  }
+  .export-buttons a.excel { background-color: #217346; } /* Excel yashil */
+  .export-buttons a.pdf { background-color: #d32f2f; }   /* PDF qizil */
+  .export-buttons a:active { opacity: 0.8; }
+
+  /* ✅ Jadval va Amallar ustunini qisqartirish */
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px; 
+    table-layout: fixed; /* Ustunlar kengligini qat'iy nazorat qilish uchun */
+  }
+  
+  /* Ustun o'lchamlarini belgilash */
+  th:nth-child(1) { width: auto; }   /* Filial nomi */
+  th:nth-child(2) { width: 55px; }   /* Foiz ustuni */
+  th:nth-child(3) { width: 85px; }   /* Sana ustuni */
+  th:nth-child(4) { width: 75px; }   /* Amallar (O'chirish) ustuni */
+
+  th, td { 
+    border: 1px solid #eee; 
+    padding: 6px 2px; 
+    vertical-align: middle; 
+    font-size: 12px;
+    text-align: center;
+    word-wrap: break-word; /* Matn sig'masa pastga tushadi */
+  }
+
+  /* ✅ O'chirish tugmasini juda ixcham qilish */
+  .del-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 10px; /* Matnni kichiklatdik */
+    cursor: pointer;
+    width: 100%;
+    text-transform: uppercase;
+  }
+
+  /* Mobilda yanada ixchamroq qilish */
+  @media (max-width: 600px) {
+    th, td { font-size: 11px; padding: 4px 2px; }
+    .del-btn { font-size: 9px; padding: 3px; }
+    .export-buttons a { font-size: 11px; }
   }
 </style>
 {% endblock %}
