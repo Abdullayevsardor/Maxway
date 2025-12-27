@@ -142,7 +142,7 @@
     /* Misol: Agar 4 ta ustun bo'lsa */
     th:nth-child(1), td:nth-child(1) { width: 35%; } /* Band nomi */
     th:nth-child(2), td:nth-child(2) { width: 15%; } /* Ball */
-    th:nth-child(3), td:nth-child(3) { width: 25%; } /* Rasm */
+    th:nth-child(3), td:nth-child(3) { width: 10%; } /* Rasm */
     th:nth-child(4), td:nth-child(4) { width: 25%; } /* Amallar */
 
     /* 5. Gorizontal scroll bo'lmasligi uchun asosiy container */
@@ -151,18 +151,40 @@
         overflow-x: hidden; /* Scrollni butkul yo'qotish */
     }
 }
-.img { 
+/* Sahifadagi kichik rasmlar uchun */
+.image-preview, .img { 
+    width: 60px !important;    /* Jadval ichida kichik bo'lishi shart */
+    height: 60px !important;
+    object-fit: cover;
     cursor: zoom-in; 
+    border-radius: 6px;
     transition: transform 0.2s; 
-}
-.img:hover { 
-    transform: scale(1.05); /* Bosishdan oldin biroz kattalashadi */
+    display: inline-block;
 }
 
-/* Modal ochilganda markazda turishi uchun */
+.image-preview:hover, .img:hover { 
+    transform: scale(1.1); 
+}
+
+/* Modal - Faqat bosilganda chiqishi uchun */
 #imageModal {
-    display: none; /* Standart holatda yashirin */
-    display: flex; /* JavaScript orqali block emas, flex qilinadi */
+    display: none; /* Boshida MUTLOQ yashirin bo'lishi kerak */
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal ichidagi katta rasm o'lchami */
+#modalImg {
+    max-width: 90%;
+    max-height: 85%;
+    border: 2px solid white;
 }
 </style>
 
@@ -245,5 +267,6 @@ function openImageModal(src) {
 function closeImageModal() {
   document.getElementById("imageModal").style.display = "none";
 }
+
 </script>
 {% endblock %}
