@@ -167,8 +167,9 @@
 }
 
 /* Modal - Faqat bosilganda chiqishi uchun */
-#imageModal {
-    display: none; /* Boshida MUTLOQ yashirin bo'lishi kerak */
+/* Modal foni */
+.modal {
+    display: none; 
     position: fixed;
     z-index: 9999;
     left: 0;
@@ -176,15 +177,41 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.9);
+    /* Rasmni markazda saqlash uchun flex */
     align-items: center;
     justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
-/* Modal ichidagi katta rasm o'lchami */
-#modalImg {
-    max-width: 90%;
-    max-height: 85%;
+/* Modal ichidagi rasm (Asosiy qism) */
+.modal-content {
+    margin: auto;
+    display: block;
+    width: auto;           /* Kenglikni rasm nisbatida saqlaydi */
+    max-width: 95vw;       /* Ekran kengligining 95% idan oshmaydi */
+    max-height: 85vh;      /* Ekran balandligining 85% idan oshmaydi */
+    object-fit: contain;   /* Rasmni kesmasdan to'liq sig'diradi */
     border: 2px solid white;
+    border-radius: 4px;
+    /* Ochilish effekti */
+    animation: zoom 0.3s;
+}
+
+@keyframes zoom {
+    from {transform: scale(0)} 
+    to {transform: scale(1)}
+}
+
+/* Yopish tugmasi */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
 }
 </style>
 
@@ -250,6 +277,8 @@
   <p>Bu filial uchun auditlar topilmadi.</p>
 {% endif %}
 
+<img src="{{ image }}" class="image-preview" onclick="openImageModal(this.src)">
+
 <div id="imageModal" class="modal" onclick="closeImageModal()">
   <span class="close">&times;</span>
   <img class="modal-content" id="modalImage">
@@ -259,14 +288,18 @@
 
 {% block extra_js %}
 <script>
-function openImageModal(src) {
-  document.getElementById("imageModal").style.display = "block";
-  document.getElementById("modalImage").src = src;
-}
+  function openImageModal(src) {
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+      
+      modal.style.display = "flex"; // "block" emas, "flex" qiling!
+      modalImg.src = src;
+  }
 
-function closeImageModal() {
-  document.getElementById("imageModal").style.display = "none";
-}
+  function closeImageModal() {
+      const modal = document.getElementById("imageModal");
+      modal.style.display = "none";
+  }
 
 </script>
 {% endblock %}
