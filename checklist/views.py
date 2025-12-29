@@ -77,9 +77,9 @@ def audit_input_view(request):
         "form": form,
         "items": items,
         "score_choices": [
-            (0, "Yo‘q"),
-            (1, "Qisman"),
-            (2, "Bor")
+            (0, "Нет"),
+            (1, "Частично"),
+            (2, "Есть")
         ],
         
         
