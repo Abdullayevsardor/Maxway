@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ filial_name }} - Audit Tafsilotlari{% endblock %}
+{% block title %}{{ filial_name }} - Детали аудита{% endblock %}
 
 {% block extra_head %}
  
@@ -224,29 +224,29 @@
 
 {% block content %}
 
-<h1>{{ filial_name }} - Audit Tafsilotlari</h1>
+<h1>{{ filial_name }} -Детали аудита</h1>
 
 {% if audit_data %}
   {% for audit_info in audit_data %}
     <div class="audit-block">
       <h2>
-        Auditor: {{ audit_info.audit.auditor|default:"-" }}
+        Аудитор: {{ audit_info.audit.auditor|default:"-" }}
       </h2>
-      <h2>Audit ID: {{ audit_info.audit.id }} | Sana: {{ audit_info.audit.created_at|date:"d-m-Y H:i" }}</h2>
-      <h3>Umumiy Foiz: {{ audit_info.percent }}%</h3>
+      <h2>ID аудита: {{ audit_info.audit.id }} | Sana: {{ audit_info.audit.created_at|date:"d-m-Y H:i" }}</h2>
+      <h3>Общий процент: {{ audit_info.percent }}%</h3>
 
       <div class="export-buttons">
-        <a href="{% url 'export_audit_detail_excel' audit_info.audit.id %}" class="excel">Excel Export</a>
-        <a href="{% url 'export_audit_detail_pdf' audit_info.audit.id %}" class="pdf">PDF Export</a>
+        <a href="{% url 'export_audit_detail_excel' audit_info.audit.id %}" class="excel">Экспорт в Excel</a>
+        <a href="{% url 'export_audit_detail_pdf' audit_info.audit.id %}" class="pdf">Экспорт в PDF</a>
       </div>
 
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Band nomi</th>
-              <th>Ball</th>
-              <th>Rasm</th>
+              <th>Название пункта</th>
+              <th>Баллы</th>
+              <th>Изображение</th>
             </tr>
           </thead>
           <tbody>
@@ -279,7 +279,7 @@
     </div>
   {% endfor %}
 {% else %}
-  <p>Bu filial uchun auditlar topilmadi.</p>
+  <p>Для этого филиала аудиты не найдены.</p>
 {% endif %}
 
 <img src="{{ image }}" class="image-preview" onclick="openImageModal(this.src)">
