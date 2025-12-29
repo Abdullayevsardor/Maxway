@@ -511,7 +511,7 @@ function createImageUploaders(bandId, tdElement) {
   const i = 1;
 
   const label = document.createElement('label');
-  label.textContent = `Rasm yuklash:`;
+  label.textContent = `Загрузка изображения:`;
   label.htmlFor = `image_${bandId}_${i}`;
 
   const input = document.createElement('input');
@@ -626,7 +626,7 @@ document.getElementById('startAuditBtn').addEventListener('click', (e) => {
   const filialName = inputElement.value.trim();
 
   if (!filialName) {
-    alert("Iltimos, filial nomini kiriting.");
+    alert("Пожалуйста, введите название филиала.");
     inputElement.focus();
     return; // ⛔ ochilmaydi
   }
