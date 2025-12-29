@@ -519,8 +519,10 @@ function createImageUploaders(bandId, tdElement) {
   input.accept = 'image/*';
   input.name = `image_${bandId}_${i}`;
   input.id = `image_${bandId}_${i}`;
-  input.setAttribute('capture', 'environment'); // ✅ telefon bo‘lsa orqa kamera
-
+  //input.setAttribute('capture', 'environment'); // ✅ telefon bo‘lsa orqa kamera
+  // setAttribute o'rniga shunday yozib ko'ring:
+  input.capture = "environment";                              
+  //input.capture = "camera";
 
   input.addEventListener('change', function(e) {
     handleImageUpload(e, bandId, i, previewContainer, inputContainer, input);
@@ -661,13 +663,13 @@ document.getElementById('auditForm').addEventListener('submit', function(e) {
   const scoreInputs = Array.from(document.querySelectorAll('.score-input'));
   scoreInputs.forEach(inp => setInvalidState(inp, false));
 
-  // const firstEmpty = scoreInputs.find(inp => inp.value.trim() === '');
-  // if (firstEmpty) {
-  //   setInvalidState(firstEmpty, true);
-  //   firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  //   setTimeout(() => firstEmpty.focus(), 250);
-  //   return;
-  // }
+  const firstEmpty = scoreInputs.find(inp => inp.value.trim() === '');
+  if (firstEmpty) {
+  setInvalidState(firstEmpty, true);
+  firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => firstEmpty.focus(), 250);
+  return;
+  }
 
   const formData = new FormData(this);
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
