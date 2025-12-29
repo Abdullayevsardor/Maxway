@@ -237,6 +237,51 @@ def audit_details_page(request):
   
  
 
+# def generate_excel(qs):
+#     wb = Workbook()
+#     ws = wb.active
+#     ws.title = "Аудиты"
+
+#     # Header qator
+#     headers = ["Филиал", "Дата", "Общий процент (%)", "Аудитор"]
+#     ws.append(headers)
+
+#     header_font = Font(bold=True, size=14)
+#     center = Alignment(horizontal="center", vertical="center")
+
+#     ws.row_dimensions[1].height = 30
+#     for col in range(1, len(headers) + 1):
+#         cell = ws.cell(row=1, column=col)
+#         cell.font = header_font
+#         cell.alignment = center
+
+#     # Data qatorlar
+#     row_num = 2
+#     for a in qs:
+#         ws.append([
+#             a.filial_nomi,
+#             timezone.localtime(a.created_at).strftime("%d-%m-%Y %H:%M"),
+#             a.total_percentage,
+#             a.auditor or "-",   # ✅ faqat DB’dan
+#         ])
+
+#         for col in range(1, 5):
+#             ws.cell(row=row_num, column=col).alignment = center
+#         row_num += 1
+
+#     # Ustun kengligi
+#     ws.column_dimensions["A"].width = 28
+#     ws.column_dimensions["B"].width = 20
+#     ws.column_dimensions["C"].width = 18
+#     ws.column_dimensions["D"].width = 18
+
+#     response = HttpResponse(
+#         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+#     )
+#     response["Content-Disposition"] = 'attachment; filename="audits.xlsx"'
+#     wb.save(response)
+#     return response
+
 def generate_excel(qs):
     wb = Workbook()
     ws = wb.active
@@ -247,13 +292,20 @@ def generate_excel(qs):
     ws.append(headers)
 
     header_font = Font(bold=True, size=14)
-    center = Alignment(horizontal="center", vertical="center")
+    
+    # Ikki xil tekislash usuli yaratamiz
+    center_wrap = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    left_wrap = Alignment(horizontal="left", vertical="center", wrap_text=True)
 
     ws.row_dimensions[1].height = 30
     for col in range(1, len(headers) + 1):
         cell = ws.cell(row=1, column=col)
         cell.font = header_font
-        cell.alignment = center
+        # Headerlarni ham xohishingizga qarab tekislaymiz
+        if col == 2:
+            cell.alignment = center_wrap
+        else:
+            cell.alignment = left_wrap
 
     # Data qatorlar
     row_num = 2
@@ -262,14 +314,19 @@ def generate_excel(qs):
             a.filial_nomi,
             timezone.localtime(a.created_at).strftime("%d-%m-%Y %H:%M"),
             a.total_percentage,
-            a.auditor or "-",   # ✅ faqat DB’dan
+            a.auditor or "-",
         ])
 
         for col in range(1, 5):
-            ws.cell(row=row_num, column=col).alignment = center
+            # SHART: Agar 2-ustun (Sana) bo'lsa o'rtaga, aks holda chapga
+            if col == 2:
+                ws.cell(row=row_num, column=col).alignment = center_wrap
+            else:
+                ws.cell(row=row_num, column=col).alignment = left_wrap
+        
         row_num += 1
 
-    # Ustun kengligi
+    # Ustun kengliklari
     ws.column_dimensions["A"].width = 28
     ws.column_dimensions["B"].width = 20
     ws.column_dimensions["C"].width = 18
@@ -281,7 +338,6 @@ def generate_excel(qs):
     response["Content-Disposition"] = 'attachment; filename="audits.xlsx"'
     wb.save(response)
     return response
-
 
 def export_excel(request):
     """
@@ -353,7 +409,7 @@ def generate_audit_detail_pdf(audit):
     doc = SimpleDocTemplate(
         response,
         pagesize=A4,
-        rightMargin=30,
+        rightMargin=30, 
         leftMargin=30,
         topMargin=30,
         bottomMargin=30,
@@ -367,11 +423,11 @@ def generate_audit_detail_pdf(audit):
     # ✅ HEADER
     header = Paragraph(
         f"""
-        <b>Детали аудита</b><br/>
-        Аудитор: <b>{audit.auditor or '-'}</b><br/>
-        Филиал: <b>{audit.filial_nomi}</b><br/>
-        Время аудита: {created_local.strftime('%d-%m-%Y %H:%M')}<br/>
-        Общий процент: <b>{audit.total_percentage}%</b>
+        <b>Audit Tafsilotlari</b><br/>
+        Auditor: <b>{audit.auditor or '-'}</b><br/>
+        Filial: <b>{audit.filial_nomi}</b><br/>
+        Audit vaqti: {created_local.strftime('%d-%m-%Y %H:%M')}<br/>
+        Umumiy foiz: <b>{audit.total_percentage}%</b>
         """,
         styles["Title"]
     )
@@ -379,7 +435,7 @@ def generate_audit_detail_pdf(audit):
     elements.append(Spacer(1, 16))
 
     # ✅ TABLE DATA
-    table_data = [["Название пункта", "Балл", "Изображение"]]
+    table_data = [["Band nomi", "Ball", "Rasm"]]
 
     for d in audit.details.all():
         band_text = Paragraph(str(d.band_id), styles["Normal"])
