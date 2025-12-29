@@ -1,36 +1,36 @@
 {% extends "base.html" %}
 
-{% block title %}Muvaffaqiyatli bajarildi!{% endblock %}
+{% block title %}Успешно выполнено!{% endblock %}
 
 {% block content %}
 
 <div class="card">
     <div class="checkmark">✔</div>
-    <h2>Muvaffaqiyatli bajarildi!</h2>
+    <h2>Успешно выполнено!</h2>
     <p>{{ message }}</p>
 
     <a href="{% url 'audit_form' %}" class="button">
-        Yana audit o'tkazish
+        Провести аудит снова
     </a>
 
     <form method="post" action="{% url 'audit_page' %}" style="margin-top: 12px;">
         {% csrf_token %}
         <button type="submit" class="login">
-            Audit natijalariga o'tish
+            Перейти к результатам аудита
         </button>
     </form>
 
     <form method="post" action="{% url 'low_scores' %}" style="margin-top: 12px;">
         {% csrf_token %}
         <button type="submit" class="low">
-            Past ballarni ko'rish
+            Просмотреть низкие баллы
         </button>
     </form>
 
     <form method="post" action="{% url 'logout' %}" style="margin-top: 12px;">
         {% csrf_token %}
         <button type="submit" class="logout-btn">
-            Chiqish (Logout)
+            Выход (Logout)
         </button>
     </form>
 </div>
