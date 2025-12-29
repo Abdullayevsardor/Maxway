@@ -247,7 +247,7 @@ def generate_excel(qs):
     ws.append(headers)
 
     header_font = Font(bold=True, size=14)
-    center = Alignment(horizontal="center", vertical="center")
+    center = Alignment(horizontal="center", vertical="center", wrap_text=True)
 
     ws.row_dimensions[1].height = 30
     for col in range(1, len(headers) + 1):
