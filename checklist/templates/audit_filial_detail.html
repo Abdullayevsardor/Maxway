@@ -232,7 +232,7 @@
       <h2>
         Аудитор: {{ audit_info.audit.auditor|default:"-" }}
       </h2>
-      <h2>ID аудита: {{ audit_info.audit.id }} | Sana: {{ audit_info.audit.created_at|date:"d-m-Y H:i" }}</h2>
+      <h2>ID аудита: {{ audit_info.audit.id }} | Дата: {{ audit_info.audit.created_at|date:"d-m-Y H:i" }}</h2>
       <h3>Общий процент: {{ audit_info.percent }}%</h3>
 
       <div class="export-buttons">
