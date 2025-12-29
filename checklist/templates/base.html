@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>{% block title %}Audit{% endblock %}</title>
+  <title>{% block title %}Аудит{% endblock %}</title>
 
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   {% block extra_head %}{% endblock %}
@@ -25,7 +25,7 @@
       {% if current != "audit_form" %}
         <a href="{% url 'audit_form' %}"
               class="abtn audit {% if request.resolver_match.url_name == 'audit_form' %}active{% endif %}">
-              ➕ Audit
+              ➕ Аудит
         </a>      
       {% endif %}
 
@@ -33,7 +33,7 @@
       {% if current != "audit_page" %}
         <a href="{% url 'audit_page' %}"
           class="abtn results {% if request.resolver_match.url_name == 'audit_page' %}active{% endif %}">
-          📊 Natijalar
+          📊 Результаты
         </a>
       {% else %}
         <button type="button" class="abtn" onclick="history.back()">⬅ Orqaga</button>
@@ -43,10 +43,10 @@
       {% if current != "low_scores" %}
         <a href="{% url 'low_scores' %}"
           class="abtn warning {% if request.resolver_match.url_name == 'low_scores' %}active{% endif %}">
-          ⚠ Past ballar
+          ⚠ Низкие баллы
         </a>
       {% else %}
-        <button type="button" class="abtn warning" onclick="history.back()">⬅ Orqaga</button>
+        <button type="button" class="abtn warning" onclick="history.back()">⬅ Назад</button>
       {% endif %}
 
   </div>
