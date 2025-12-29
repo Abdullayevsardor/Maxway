@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Past ballar (0-1){% endblock %}
+{% block title %}Низкие баллы (0-1){% endblock %}
 
 {% block extra_head %}
 <style>
@@ -132,11 +132,11 @@
 
 {% block content %}
 
-<h2>Past ballar (0 va 1)</h2>
+<h2>Низкие баллы (0 va 1)</h2>
 
 <form class="filters" method="get">
   <select name="filial">
-    <option value="all">Barcha filiallar</option>
+    <option value="all">Все филиалы</option>
     {% for f in all_filials %}
       <option value="{{ f }}" {% if selected_filial == f %}selected{% endif %}>{{ f }}</option>
     {% endfor %}
@@ -144,32 +144,32 @@
 
   <select name="score">
     <option value="all" {% if selected_score == "all" %}selected{% endif %}>0 va 1</option>
-    <option value="0" {% if selected_score == "0" %}selected{% endif %}>faqat 0</option>
-    <option value="1" {% if selected_score == "1" %}selected{% endif %}>faqat 1</option>
+    <option value="0" {% if selected_score == "0" %}selected{% endif %}>Только 0</option>
+    <option value="1" {% if selected_score == "1" %}selected{% endif %}>Только 1</option>
   </select>
 
   <input type="date" name="from" value="{{ date_from }}">
   <input type="date" name="to" value="{{ date_to }}">
 
-  <button class="btn" type="submit">Filter</button>
+  <button class="btn" type="submit">Фильтр</button>
 </form>
 
 {% for a in audits %}
   {% if a.low_details %}
     <div class="card">
       <div class="card-info">
-        Filial: <b>{{ a.filial_nomi }}</b> |
-        Auditor: <b>{{ a.auditor|default:"-" }}</b> |
-        Sana: <b>{{ a.created_at|date:"d-m-Y H:i" }}</b>
+        Филиал: <b>{{ a.filial_nomi }}</b> |
+        Аудитор: <b>{{ a.auditor|default:"-" }}</b> |
+        Дата: <b>{{ a.created_at|date:"d-m-Y H:i" }}</b>
       </div>
 
       <div class="table-wrap">
         <table >
           <thead>
             <tr>
-              <th>Band</th>
-              <th style="width:70px;">Ball</th>
-              <th style="width:140px;">Rasm</th>
+              <th>Пункт</th>
+              <th style="width:70px;">Баллы</th>
+              <th style="width:140px;">Изображение</th>
             </tr>
           </thead>
           <tbody>
