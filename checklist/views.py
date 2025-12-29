@@ -243,7 +243,7 @@ def generate_excel(qs):
     ws.title = "Аудиты"
 
     # Header qator
-    headers = ["Филиал", "Дата", "Общий процент (%)", "Аудитор"]
+    headers = ["Филиал", "Дата", "Процент (%)", "Аудитор"]
     ws.append(headers)
 
     header_font = Font(bold=True, size=14)
