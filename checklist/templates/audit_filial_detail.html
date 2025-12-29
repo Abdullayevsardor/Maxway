@@ -233,7 +233,7 @@
         Аудитор: {{ audit_info.audit.auditor|default:"-" }}
       </h2>
       <h2>ID аудита: {{ audit_info.audit.id }} | Дата: {{ audit_info.audit.created_at|date:"d-m-Y H:i" }}</h2>
-      <h3>Общий процент: {{ audit_info.percent }}%</h3>
+      <h3>Итоговый процент: {{ audit_info.percent }}%</h3>
 
       <div class="export-buttons">
         <a href="{% url 'export_audit_detail_excel' audit_info.audit.id %}" class="excel">Экспорт в Excel</a>
@@ -251,7 +251,7 @@
           </thead>
           <tbody>
             {% for band in audit_info.bands %}
-              <tr>
+              <tr> 
                 <td>{{ band.band_name }}</td>
                 <td class="score
                   {% if band.score == 3 %}green
