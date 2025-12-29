@@ -102,7 +102,7 @@ def audit_form_view(request):
         print("Fayl Ma'lumotlari (request.FILES):", request.FILES)
         print("-------------------------")
         if not filial_nomi:
-            return HttpResponse("Xato: Filial nomi kiritilmagan.", status=400)
+            return HttpResponse("Ошибка: название филиала не указано", status=400)
         try:
             total_percentage = float(total_percentage_str) if total_percentage_str else None
         except ValueError:
@@ -150,7 +150,7 @@ def audit_form_view(request):
             # Agar DB tranzaksiyasida xatolik yuz bersa
             print(f"Xatolik: {e}")
             # return redirect('/audit/success/') 
-            return HttpResponse(f"Ma'lumotlarni saqlashda xatolik yuz berdi: {e}", status=500)
+            return HttpResponse(f"Произошла ошибка при сохранении данных {e}", status=500)
 
     # GET so'rovi bo'lsa (formani ko'rsatish)
     return render(request, 'worker.html', {"show_action_bar": True})
@@ -195,7 +195,7 @@ class ScoreCreateUpdateView(APIView):
 def audit_success_view(request):
     """Ma'lumotlar muvaffaqiyatli saqlanganidan keyingi sahifa."""
     context = {
-        'message': "Audit ma'lumotlari muvaffaqiyatli saqlandi!"
+        'message': "Данные аудита успешно сохранены!"
     }
     return render(request, 'success.html', context)
 
@@ -240,10 +240,10 @@ def audit_details_page(request):
 def generate_excel(qs):
     wb = Workbook()
     ws = wb.active
-    ws.title = "Auditlar"
+    ws.title = "Аудиты"
 
     # Header qator
-    headers = ["Filial", "Sana", "Umumiy foiz (%)", "Auditor"]
+    headers = ["Филиал", "Дата", "Общий процент (%)", "Аудитор"]
     ws.append(headers)
 
     header_font = Font(bold=True, size=14)
@@ -285,10 +285,10 @@ def generate_excel(qs):
 
 def export_excel(request):
     """
-    GET parametrlari:
-      - filial: "all" yoki filial nomi
-      - from: YYYY-MM-DD  (masalan 2025-12-01)
-      - to:   YYYY-MM-DD
+        Параметры GET:
+          - filial: "all" или название филиала
+          - from: ГГГГ-ММ-ДД (например 2025-12-01)
+          - to:   ГГГГ-ММ-ДД
     """
     qs = Audit.objects.all().order_by("-created_at")
 
@@ -320,10 +320,10 @@ def export_pdf(request):
     styles = getSampleStyleSheet()
     elements = []
 
-    elements.append(Paragraph("<b>Auditlar ro‘yxati</b>", styles["Title"]))
+    elements.append(Paragraph("<b>Список аудитов</b>", styles["Title"]))
     elements.append(Spacer(1, 20))
 
-    table_data = [["Filial", "Sana", "Foiz (%)", "Auditor"]]
+    table_data = [["Филиал", "Дата", "Общий процент (%)", "Аудитор"]]
     for a in audits:
         table_data.append([
             a.filial_nomi,
@@ -367,11 +367,11 @@ def generate_audit_detail_pdf(audit):
     # ✅ HEADER
     header = Paragraph(
         f"""
-        <b>Audit Tafsilotlari</b><br/>
-        Auditor: <b>{audit.auditor or '-'}</b><br/>
-        Filial: <b>{audit.filial_nomi}</b><br/>
-        Audit vaqti: {created_local.strftime('%d-%m-%Y %H:%M')}<br/>
-        Umumiy foiz: <b>{audit.total_percentage}%</b>
+        <b>Детали аудита</b><br/>
+        Аудитор: <b>{audit.auditor or '-'}</b><br/>
+        Филиал: <b>{audit.filial_nomi}</b><br/>
+        Время аудита: {created_local.strftime('%d-%m-%Y %H:%M')}<br/>
+        Общий процент: <b>{audit.total_percentage}%</b>
         """,
         styles["Title"]
     )
@@ -379,7 +379,7 @@ def generate_audit_detail_pdf(audit):
     elements.append(Spacer(1, 16))
 
     # ✅ TABLE DATA
-    table_data = [["Band nomi", "Ball", "Rasm"]]
+    table_data = [["Название пункта", "Балл", "Изображение"]]
 
     for d in audit.details.all():
         band_text = Paragraph(str(d.band_id), styles["Normal"])
@@ -461,16 +461,16 @@ def export_audit_detail_excel(request, audit_id):
 
     wb = Workbook()
     ws = wb.active
-    ws.title = f"Audit {audit.id}"
+    ws.title = f"Аудит {audit.id}"
 
     # =================
     #  Header ma'lumotlari chap burchak
     # =================
     ws.merge_cells('A1:C1')
-    ws['A1'] = f"Audit ID: {audit.id}"
-    ws['A2'] = f"Filial: {audit.filial_nomi}"
-    ws['A3'] = f"Auditor: {audit.auditor or '-'}"          
-    ws['A4'] = f"Umumiy Foiz: {audit.total_percentage}%"   
+    ws['A1'] = f"ID аудита: {audit.id}"
+    ws['A2'] = f"Филиал: {audit.filial_nomi}"
+    ws['A3'] = f"Аудитор: {audit.auditor or '-'}"          
+    ws['A4'] = f"Общий процент: {audit.total_percentage}%"   
 
     for cell in ['A1', 'A2', 'A3', 'A4']:
         ws[cell].font = Font(bold=True, size=12)
@@ -479,7 +479,7 @@ def export_audit_detail_excel(request, audit_id):
     # =================
     #  Jadval headers
     # =================
-    headers = ["Band nomi", "Ball", "Rasm"]
+    headers = ["Название пункта", "Балл", "Изображение"]
     start_row = 6  # ✅ oldin 5 edi, header 4 qator bo‘ldi
     for col_num, header in enumerate(headers, 1):
         cell = ws.cell(row=start_row, column=col_num, value=header)
@@ -528,9 +528,9 @@ def worker_login(request):
         pin = (request.POST.get('password') or '').strip()
 
         if not username or not pin:
-            error = "Username va Password kiritilishi shart!"
+            error = "Требуется ввод имени пользователя и пароля!"
         elif not settings.GLOBAL_WORKER_PIN:
-            error = "Serverda GLOBAL_WORKER_PIN sozlanmagan!"
+            error = "На сервере не настроен GLOBAL_WORKER_PIN!"
         elif constant_time_compare(pin, settings.GLOBAL_WORKER_PIN):
             user, created = User.objects.get_or_create(username=username)
 
@@ -547,7 +547,7 @@ def worker_login(request):
 
             return redirect('audit_form')
         else:
-            error = "Password noto‘g‘ri!"
+            error = "Неверный пароль!"
 
     return render(request, 'worker_login.html', {'error': error})
 
