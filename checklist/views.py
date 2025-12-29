@@ -237,51 +237,6 @@ def audit_details_page(request):
   
  
 
-# def generate_excel(qs):
-#     wb = Workbook()
-#     ws = wb.active
-#     ws.title = "Аудиты"
-
-#     # Header qator
-#     headers = ["Филиал", "Дата", "Общий процент (%)", "Аудитор"]
-#     ws.append(headers)
-
-#     header_font = Font(bold=True, size=14)
-#     center = Alignment(horizontal="center", vertical="center")
-
-#     ws.row_dimensions[1].height = 30
-#     for col in range(1, len(headers) + 1):
-#         cell = ws.cell(row=1, column=col)
-#         cell.font = header_font
-#         cell.alignment = center
-
-#     # Data qatorlar
-#     row_num = 2
-#     for a in qs:
-#         ws.append([
-#             a.filial_nomi,
-#             timezone.localtime(a.created_at).strftime("%d-%m-%Y %H:%M"),
-#             a.total_percentage,
-#             a.auditor or "-",   # ✅ faqat DB’dan
-#         ])
-
-#         for col in range(1, 5):
-#             ws.cell(row=row_num, column=col).alignment = center
-#         row_num += 1
-
-#     # Ustun kengligi
-#     ws.column_dimensions["A"].width = 28
-#     ws.column_dimensions["B"].width = 20
-#     ws.column_dimensions["C"].width = 18
-#     ws.column_dimensions["D"].width = 18
-
-#     response = HttpResponse(
-#         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-#     )
-#     response["Content-Disposition"] = 'attachment; filename="audits.xlsx"'
-#     wb.save(response)
-#     return response
-
 def generate_excel(qs):
     wb = Workbook()
     ws = wb.active
@@ -292,20 +247,13 @@ def generate_excel(qs):
     ws.append(headers)
 
     header_font = Font(bold=True, size=14)
-    
-    # Ikki xil tekislash usuli yaratamiz
-    center_wrap = Alignment(horizontal="center", vertical="center", wrap_text=True)
-    left_wrap = Alignment(horizontal="left", vertical="center", wrap_text=True)
+    center = Alignment(horizontal="center", vertical="center")
 
     ws.row_dimensions[1].height = 30
     for col in range(1, len(headers) + 1):
         cell = ws.cell(row=1, column=col)
         cell.font = header_font
-        # Headerlarni ham xohishingizga qarab tekislaymiz
-        if col == 2:
-            cell.alignment = center_wrap
-        else:
-            cell.alignment = left_wrap
+        cell.alignment = center
 
     # Data qatorlar
     row_num = 2
@@ -314,19 +262,14 @@ def generate_excel(qs):
             a.filial_nomi,
             timezone.localtime(a.created_at).strftime("%d-%m-%Y %H:%M"),
             a.total_percentage,
-            a.auditor or "-",
+            a.auditor or "-",   # ✅ faqat DB’dan
         ])
 
         for col in range(1, 5):
-            # SHART: Agar 2-ustun (Sana) bo'lsa o'rtaga, aks holda chapga
-            if col == 2:
-                ws.cell(row=row_num, column=col).alignment = center_wrap
-            else:
-                ws.cell(row=row_num, column=col).alignment = left_wrap
-        
+            ws.cell(row=row_num, column=col).alignment = center
         row_num += 1
 
-    # Ustun kengliklari
+    # Ustun kengligi
     ws.column_dimensions["A"].width = 28
     ws.column_dimensions["B"].width = 20
     ws.column_dimensions["C"].width = 18
@@ -376,10 +319,10 @@ def export_pdf(request):
     styles = getSampleStyleSheet()
     elements = []
 
-    elements.append(Paragraph("<b>Список аудитов</b>", styles["Title"]))
+    elements.append(Paragraph("<b>Auditlar ro‘yxati</b>", styles["Title"]))
     elements.append(Spacer(1, 20))
 
-    table_data = [["Филиал", "Дата", "Общий процент (%)", "Аудитор"]]
+    table_data = [["Filial", "Sana", "Foiz (%)", "Auditor"]]
     for a in audits:
         table_data.append([
             a.filial_nomi,
@@ -510,6 +453,8 @@ def audit_delete(request, id):
 
 
  
+from openpyxl.styles import Font, Alignment
+from openpyxl.utils import get_column_letter
 
 def export_audit_detail_excel(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
@@ -519,8 +464,12 @@ def export_audit_detail_excel(request, audit_id):
     ws = wb.active
     ws.title = f"Аудит {audit.id}"
 
+    # ✅ Tekislash uslublarini aniqlab olamiz
+    center_wrap = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    left_wrap = Alignment(horizontal="left", vertical="center", wrap_text=True)
+
     # =================
-    #  Header ma'lumotlari chap burchak
+    #  Header ma'lumotlari (Tepada)
     # =================
     ws.merge_cells('A1:C1')
     ws['A1'] = f"ID аудита: {audit.id}"
@@ -528,33 +477,43 @@ def export_audit_detail_excel(request, audit_id):
     ws['A3'] = f"Аудитор: {audit.auditor or '-'}"          
     ws['A4'] = f"Общий процент: {audit.total_percentage}%"   
 
-    for cell in ['A1', 'A2', 'A3', 'A4']:
-        ws[cell].font = Font(bold=True, size=12)
-        ws[cell].alignment = Alignment(horizontal="left")
+    for cell_name in ['A1', 'A2', 'A3', 'A4']:
+        ws[cell_name].font = Font(bold=True, size=12)
+        ws[cell_name].alignment = left_wrap
 
     # =================
-    #  Jadval headers
+    #  Jadval sarlavhalari (Headers)
     # =================
     headers = ["Название пункта", "Балл", "Изображение"]
-    start_row = 6  # ✅ oldin 5 edi, header 4 qator bo‘ldi
+    start_row = 6 
     for col_num, header in enumerate(headers, 1):
         cell = ws.cell(row=start_row, column=col_num, value=header)
         cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal="center")
-        ws.column_dimensions[get_column_letter(col_num)].width = 20
+        # Sarlavhalar odatda o'rtada tursa chiroyli ko'rinadi
+        cell.alignment = center_wrap
+        ws.column_dimensions[get_column_letter(col_num)].width = 30 # Kenglikni biroz oshirdik
 
     # =================
-    #  Jadval ma'lumotlari
+    #  Jadval ma'lumotlari (Data)
     # =================
     row_num = start_row + 1
     for d in qs:
-        ws.cell(row=row_num, column=1, value=d.band_id)
+        # Ma'lumotlarni kataklarga yozamiz
+        ws.cell(row=row_num, column=1, value=str(d.band_id))
         ws.cell(row=row_num, column=2, value=d.score)
         ws.cell(row=row_num, column=3, value=d.image.url if d.image else "-")
 
+        # ✅ Ustunlar bo'yicha turli tekislashni qo'llaymiz
         for col in range(1, 4):
-            ws.cell(row=row_num, column=col).alignment = Alignment(horizontal="center")
+            if col == 2:
+                # Faqat 2-ustun (Балл) o'rtada
+                ws.cell(row=row_num, column=col).alignment = center_wrap
+            else:
+                # 1-ustun (Название) va 3-ustun (Rasm linki) chapdan
+                ws.cell(row=row_num, column=col).alignment = left_wrap
+        
         row_num += 1
+
     response = HttpResponse(
         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
