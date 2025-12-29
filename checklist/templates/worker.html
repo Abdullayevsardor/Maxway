@@ -462,7 +462,7 @@ function updatePercentage() {
 
   const finalPercentage = maxPossibleScore > 0 ? (totalScore / maxPossibleScore) * 100 : 0;
 
-  document.getElementById('totalPercentHeader').textContent = `Umumiy Foiz: ${finalPercentage.toFixed(2)}%`;
+  document.getElementById('totalPercentHeader').textContent = `Итоговый процент: ${finalPercentage.toFixed(2)}%`;
   document.getElementById('hiddenTotalPercentage').value = finalPercentage.toFixed(2);
 }
 
@@ -511,7 +511,7 @@ function createImageUploaders(bandId, tdElement) {
   const i = 1;
 
   const label = document.createElement('label');
-  label.textContent = `Загрузка изображения:`;
+  label.textContent = `Загрузить фото`;
   label.htmlFor = `image_${bandId}_${i}`;
 
   const input = document.createElement('input');
