@@ -235,6 +235,11 @@ input[type="file"]::-webkit-file-upload-button {
         min-width: 100% !important; 
     }
 }
+.audit-form-hidden {
+  position: absolute;
+  left: -9999px;
+}
+
 
 </style>
 {% endblock %}
@@ -280,7 +285,7 @@ input[type="file"]::-webkit-file-upload-button {
   Аудитор: {{ request.session.auditor_username }}
 </div>
 <div class="audit-card">
-  <form id="auditForm" method="POST" action="{% url 'audit_form' %}" enctype="multipart/form-data" style="display:none;">
+  <form id="auditForm" class="audit-form-hidden" method="POST" action="{% url 'audit_form' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     <input type="hidden" id="hiddenFilialName" name="filial_nomi" value="">
