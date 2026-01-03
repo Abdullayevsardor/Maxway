@@ -1,8 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db import models
+import uuid
+import os
 
+def audit_image_path(instance, filename):
+    ext = filename.split('.')[-1]
+    return f"audit_images/{uuid.uuid4().hex}.{ext}"
 
+ 
 
 
 class Category(models.Model):
@@ -35,8 +41,7 @@ class Branch(models.Model):
     def __str__(self):
         return self.name
 
-    def __str__(self):
-        return self.name
+   
 
 class Score(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
@@ -74,12 +79,13 @@ class AuditDetail(models.Model):
     """Har bir band uchun ball va rasm ma'lumotlari."""
     
     audit = models.ForeignKey(Audit, on_delete=models.CASCADE, related_name='details', verbose_name="Audit")
-    
     band_id = models.CharField(max_length=255, verbose_name="Band IDsi (Savol)") # Masalan: '01', '02', '03'
     score = models.IntegerField(verbose_name="Kiritilgan Ball (0-3)")
-    # Rasmlar 'uploads/audit_images/' papkasiga saqlanadi
-    image = models.ImageField(upload_to='audit_images/', null=True, blank=True, verbose_name="Rasm")    
-     
+    image = models.ImageField(
+            upload_to=audit_image_path,
+            null=True,
+            blank=True
+        )     
     def __str__(self):
         return f"{self.audit.filial_nomi} - Band {self.band_id}: {self.score} ball"
     
