@@ -234,11 +234,7 @@ input[type="file"]::-webkit-file-upload-button {
     table {
         min-width: 100% !important; 
     }
-}
-.audit-form-hidden {
-  position: absolute;
-  left: -9999px;
-}
+ 
 
 
 </style>
@@ -285,7 +281,7 @@ input[type="file"]::-webkit-file-upload-button {
   Аудитор: {{ request.session.auditor_username }}
 </div>
 <div class="audit-card">
-  <form id="auditForm" class="audit-form-hidden" method="POST" action="{% url 'audit_form' %}" enctype="multipart/form-data">
+  <form id="auditForm"  method="POST" action="{% url 'audit_form' %}" enctype="multipart/form-data" style="display:none">
     {% csrf_token %}
 
     <input type="hidden" id="hiddenFilialName" name="filial_nomi" value="">
@@ -558,7 +554,12 @@ function handleImageUpload(e, bandId, index, previewContainer, inputContainer, f
       return;
     }
 
-    inputContainer.style.display = 'none';
+    // inputContainer.style.display = 'none';
+    
+    inputContainer.style.opacity = '0';
+    inputContainer.style.position = 'absolute';
+    inputContainer.style.pointerEvents = 'none';
+
 
     const reader = new FileReader();
     reader.onload = function(event) {
