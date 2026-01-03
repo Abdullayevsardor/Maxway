@@ -3,14 +3,18 @@ from django.contrib.auth.models import User
 from django.db import models
 import uuid
 import os
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
+
+
+
+
 
 def audit_image_path(instance, filename):
     ext = filename.split('.')[-1]
     return f"audit_images/{uuid.uuid4().hex}.{ext}"
-
  
-
-
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
@@ -85,7 +89,37 @@ class AuditDetail(models.Model):
             upload_to=audit_image_path,
             null=True,
             blank=True
-        )     
+        )  
+    
+    def save(self, *args, **kwargs):
+        if self.image:
+            img = Image.open(self.image)
+
+            # RGB ga o‘tkazamiz (PNG/JPEG muammosiz bo‘lsin)
+            if img.mode in ("RGBA", "P"):
+                img = img.convert("RGB")
+
+            # MAX o‘lcham (masalan 1280x1280)
+            img.thumbnail((1280, 1280))
+
+            buffer = BytesIO()
+            img.save(
+                buffer,
+                format="JPEG",
+                quality=70,      # 👈 ASOSIY SIQISH
+                optimize=True
+            )
+
+            self.image.save(
+                self.image.name,
+                ContentFile(buffer.getvalue()),
+                save=False
+            )
+
+        super().save(*args, **kwargs)
+
+
+    
     def __str__(self):
         return f"{self.audit.filial_nomi} - Band {self.band_id}: {self.score} ball"
     
