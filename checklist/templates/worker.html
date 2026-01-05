@@ -536,61 +536,154 @@ function createImageUploaders(bandId, tdElement) {
   tdElement.appendChild(previewContainer);
 }
 
-function handleImageUpload(e, bandId, index, previewContainer, inputContainer, fileInput) {
+// function handleImageUpload(e, bandId, index, previewContainer, inputContainer, fileInput) {
+//   const file = e.target.files[0];
+//   const maxFileSize = 5 * 1024 * 1024;
+
+//   previewContainer.innerHTML = '';
+
+//   if (file) {
+//     if (!file.type.startsWith('image/')) {
+//       alert('Faqat rasm fayllarini yuklang!');
+//       e.target.value = '';
+//       return;
+//     }
+//     if (file.size > maxFileSize) {
+//       alert('Rasm hajmi 5MB dan oshmasligi kerak!');
+//       e.target.value = '';
+//       return;
+//     }
+
+//     // inputContainer.style.display = 'none';
+    
+//     inputContainer.style.opacity = '0';
+//     inputContainer.style.position = 'absolute';
+//     inputContainer.style.pointerEvents = 'none';
+
+
+//     const reader = new FileReader();
+//     reader.onload = function(event) {
+//       const wrapper = document.createElement('div');
+//       wrapper.classList.add('image-preview-wrapper');
+//       wrapper.id = `wrapper_${bandId}_${index}`;
+
+//       const img = document.createElement('img');
+//       img.src = event.target.result;
+//       img.classList.add('image-preview');
+
+//       const deleteBtn = document.createElement('div');
+//       deleteBtn.classList.add('delete-btn');
+//       deleteBtn.textContent = 'X';
+
+//       deleteBtn.addEventListener('click', () => {
+//         fileInput.value = '';
+//         previewContainer.innerHTML = '';
+//         inputContainer.style.display = 'block';
+//       });
+
+//       wrapper.appendChild(img);
+//       wrapper.appendChild(deleteBtn);
+//       previewContainer.appendChild(wrapper);
+//     };
+//     reader.readAsDataURL(file);
+
+//   } else {
+//     inputContainer.style.display = 'block';
+//   }
+// }
+
+async function handleImageUpload(e, bandId, index, previewContainer, inputContainer, fileInput) {
   const file = e.target.files[0];
   const maxFileSize = 5 * 1024 * 1024;
 
   previewContainer.innerHTML = '';
+  if (!file) return;
 
-  if (file) {
-    if (!file.type.startsWith('image/')) {
-      alert('Faqat rasm fayllarini yuklang!');
-      e.target.value = '';
-      return;
-    }
-    if (file.size > maxFileSize) {
-      alert('Rasm hajmi 5MB dan oshmasligi kerak!');
-      e.target.value = '';
-      return;
-    }
-
-    // inputContainer.style.display = 'none';
-    
-    inputContainer.style.opacity = '0';
-    inputContainer.style.position = 'absolute';
-    inputContainer.style.pointerEvents = 'none';
-
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const wrapper = document.createElement('div');
-      wrapper.classList.add('image-preview-wrapper');
-      wrapper.id = `wrapper_${bandId}_${index}`;
-
-      const img = document.createElement('img');
-      img.src = event.target.result;
-      img.classList.add('image-preview');
-
-      const deleteBtn = document.createElement('div');
-      deleteBtn.classList.add('delete-btn');
-      deleteBtn.textContent = 'X';
-
-      deleteBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        previewContainer.innerHTML = '';
-        inputContainer.style.display = 'block';
-      });
-
-      wrapper.appendChild(img);
-      wrapper.appendChild(deleteBtn);
-      previewContainer.appendChild(wrapper);
-    };
-    reader.readAsDataURL(file);
-
-  } else {
-    inputContainer.style.display = 'block';
+  if (!file.type.startsWith('image/')) {
+    alert('Загружайте только файлы изображений!');
+    fileInput.value = '';
+    return;
   }
+
+  if (file.size > maxFileSize) {
+    alert('Размер изображения не должен превышать 5 МБ!');
+    fileInput.value = '';
+    return;
+  }
+
+  inputContainer.style.display = 'none';
+
+  // 🔽 Rasmni o‘qiymiz
+  const img = new Image();
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    img.src = reader.result;
+  };
+
+  img.onload = async () => {
+    const canvas = document.createElement('canvas');
+
+    let width = img.width;
+    let height = img.height;
+    const maxSide = 1280;
+
+    if (width > height && width > maxSide) {
+      height *= maxSide / width;
+      width = maxSide;
+    } else if (height > maxSide) {
+      width *= maxSide / height;
+      height = maxSide;
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+
+    // 🔥 SIQISH (JPEG 70%)
+    const blob = await new Promise(resolve =>
+      canvas.toBlob(resolve, 'image/jpeg', 0.7)
+    );
+
+    const compressedFile = new File([blob], file.name, {
+      type: 'image/jpeg',
+      lastModified: Date.now()
+    });
+
+    // 🔁 inputga qayta joylaymiz
+    const dt = new DataTransfer();
+    dt.items.add(compressedFile);
+    fileInput.files = dt.files;
+
+    // 👁 PREVIEW
+    const previewURL = URL.createObjectURL(blob);
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('image-preview-wrapper');
+
+    const previewImg = document.createElement('img');
+    previewImg.src = previewURL;
+    previewImg.classList.add('image-preview');
+
+    const deleteBtn = document.createElement('div');
+    deleteBtn.classList.add('delete-btn');
+    deleteBtn.textContent = 'X';
+
+    deleteBtn.onclick = () => {
+      fileInput.value = '';
+      previewContainer.innerHTML = '';
+      inputContainer.style.display = 'block';
+    };
+
+    wrapper.appendChild(previewImg);
+    wrapper.appendChild(deleteBtn);
+    previewContainer.appendChild(wrapper);
+  };
+
+  reader.readAsDataURL(file);
 }
+
 
 function populateTable() {
   const tbody = document.getElementById('audit-body');
