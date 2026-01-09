@@ -467,15 +467,49 @@ function updatePercentage() {
   document.getElementById('hiddenTotalPercentage').value = finalPercentage.toFixed(2);
 }
 
-function createScoreInput(bandId, tdElement) {
+// function createScoreInput(bandId, tdElement) {
+//   const input = document.createElement('input');
+//   input.type = 'number';
+//   input.className = 'score-input';
+//   input.min = '0';
+//   input.max = '3';
+//   input.placeholder = '0-3';
+//   input.name = `score_${bandId}`;
+//   input.id = `score_${bandId}`;
+
+//   input.addEventListener('input', function() {
+//     let score = this.value.trim();
+//     if (score !== '' && (parseInt(score) < 0 || parseInt(score) > 3 || score.length > 1)) {
+//       this.value = '';
+//       score = '';
+//     }
+
+//     tdElement.classList.remove('green', 'yellow', 'red', 'default');
+//     tdElement.classList.add(getColorClass(score));
+
+//     if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
+//     allScores[bandId].score = score;
+//     setInvalidState(this, this.value.trim() === '');
+
+//     updatePercentage();
+//   });
+
+//   tdElement.appendChild(input);
+//   tdElement.classList.add('default');
+
+//   if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
+// }
+// bandText kiritilganiga ishonch hosil qiling ⬇️
+function createScoreInput(bandId, tdElement, bandText) { 
   const input = document.createElement('input');
   input.type = 'number';
   input.className = 'score-input';
   input.min = '0';
   input.max = '3';
   input.placeholder = '0-3';
-  input.name = `score_${bandText}`;
-  // input.name = `score_${bandId}`;
+  
+  // ✅ Endi 'name' xususiyati to'liq matndan iborat bo'ladi
+  input.name = `score_${bandText}`; 
   input.id = `score_${bandId}`;
 
   input.addEventListener('input', function() {
@@ -484,23 +518,17 @@ function createScoreInput(bandId, tdElement) {
       this.value = '';
       score = '';
     }
-
     tdElement.classList.remove('green', 'yellow', 'red', 'default');
     tdElement.classList.add(getColorClass(score));
 
     if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
     allScores[bandId].score = score;
-    setInvalidState(this, this.value.trim() === '');
-
     updatePercentage();
   });
 
   tdElement.appendChild(input);
   tdElement.classList.add('default');
-
-  if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
 }
-
 function createImageUploaders(bandId, tdElement) {
   const inputContainer = document.createElement('div');
   inputContainer.classList.add('image-container');
@@ -536,62 +564,7 @@ function createImageUploaders(bandId, tdElement) {
   tdElement.appendChild(inputContainer);
   tdElement.appendChild(previewContainer);
 }
-
-// function handleImageUpload(e, bandId, index, previewContainer, inputContainer, fileInput) {
-//   const file = e.target.files[0];
-//   const maxFileSize = 5 * 1024 * 1024;
-
-//   previewContainer.innerHTML = '';
-
-//   if (file) {
-//     if (!file.type.startsWith('image/')) {
-//       alert('Faqat rasm fayllarini yuklang!');
-//       e.target.value = '';
-//       return;
-//     }
-//     if (file.size > maxFileSize) {
-//       alert('Rasm hajmi 5MB dan oshmasligi kerak!');
-//       e.target.value = '';
-//       return;
-//     }
-
-//     // inputContainer.style.display = 'none';
-    
-//     inputContainer.style.opacity = '0';
-//     inputContainer.style.position = 'absolute';
-//     inputContainer.style.pointerEvents = 'none';
-
-
-//     const reader = new FileReader();
-//     reader.onload = function(event) {
-//       const wrapper = document.createElement('div');
-//       wrapper.classList.add('image-preview-wrapper');
-//       wrapper.id = `wrapper_${bandId}_${index}`;
-
-//       const img = document.createElement('img');
-//       img.src = event.target.result;
-//       img.classList.add('image-preview');
-
-//       const deleteBtn = document.createElement('div');
-//       deleteBtn.classList.add('delete-btn');
-//       deleteBtn.textContent = 'X';
-
-//       deleteBtn.addEventListener('click', () => {
-//         fileInput.value = '';
-//         previewContainer.innerHTML = '';
-//         inputContainer.style.display = 'block';
-//       });
-
-//       wrapper.appendChild(img);
-//       wrapper.appendChild(deleteBtn);
-//       previewContainer.appendChild(wrapper);
-//     };
-//     reader.readAsDataURL(file);
-
-//   } else {
-//     inputContainer.style.display = 'block';
-//   }
-// }
+ 
 
 async function handleImageUpload(e, bandId, index, previewContainer, inputContainer, fileInput) {
   const file = e.target.files[0];
@@ -686,6 +659,40 @@ async function handleImageUpload(e, bandId, index, previewContainer, inputContai
 }
 
 
+// function populateTable() {
+//   const tbody = document.getElementById('audit-body');
+//   tbody.innerHTML = '';
+
+//   AUDIT_DATA.forEach(data => {
+//     const row = document.createElement('tr');
+
+//     if (data.subheader) {
+//       row.classList.add('subheader-row');
+//       row.innerHTML = `<th colspan="3">${data.text}</th>`;
+//     } else {
+//       row.setAttribute('data-band-id', data.bandId);
+
+//       const bandTd = document.createElement('td');
+//       bandTd.textContent = data.text;
+//       row.appendChild(bandTd);
+
+//       const scoreTd = document.createElement('td');
+//       scoreTd.classList.add('score-column');
+//       createScoreInput(data.bandId, scoreTd);
+//       row.appendChild(scoreTd);
+
+//       const imageTd = document.createElement('td');
+//       imageTd.classList.add('image-column');
+//       createImageUploaders(data.bandId, imageTd);
+//       row.appendChild(imageTd);
+//     }
+
+//     tbody.appendChild(row);
+//   });
+
+//   updatePercentage();
+// }
+
 function populateTable() {
   const tbody = document.getElementById('audit-body');
   tbody.innerHTML = '';
@@ -700,12 +707,15 @@ function populateTable() {
       row.setAttribute('data-band-id', data.bandId);
 
       const bandTd = document.createElement('td');
-      bandTd.textContent = data.text;
+      bandTd.textContent = data.text; // Bu ekranda savol matnini ko'rsatadi
       row.appendChild(bandTd);
 
       const scoreTd = document.createElement('td');
       scoreTd.classList.add('score-column');
-      createScoreInput(data.bandId, scoreTd, data.text);
+      
+      // ✅ MUHIM: data.text uchinchi argument sifatida berildi
+      createScoreInput(data.bandId, scoreTd, data.text); 
+      
       row.appendChild(scoreTd);
 
       const imageTd = document.createElement('td');
