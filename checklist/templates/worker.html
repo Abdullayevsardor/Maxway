@@ -467,14 +467,47 @@ function updatePercentage() {
   document.getElementById('hiddenTotalPercentage').value = finalPercentage.toFixed(2);
 }
 
-function createScoreInput(bandId, tdElement) {
+// function createScoreInput(bandId, tdElement) {
+//   const input = document.createElement('input');
+//   input.type = 'number';
+//   input.className = 'score-input';
+//   input.min = '0';
+//   input.max = '3';
+//   input.placeholder = '0-3';
+//   input.name = `score_${bandId}`;
+//   input.id = `score_${bandId}`;
+
+//   input.addEventListener('input', function() {
+//     let score = this.value.trim();
+//     if (score !== '' && (parseInt(score) < 0 || parseInt(score) > 3 || score.length > 1)) {
+//       this.value = '';
+//       score = '';
+//     }
+
+//     tdElement.classList.remove('green', 'yellow', 'red', 'default');
+//     tdElement.classList.add(getColorClass(score));
+
+//     if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
+//     allScores[bandId].score = score;
+//     setInvalidState(this, this.value.trim() === '');
+
+//     updatePercentage();
+//   });
+
+//   tdElement.appendChild(input);
+//   tdElement.classList.add('default');
+
+//   if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
+// }
+
+function createScoreInput(bandId, tdElement, bandText) { // <--- bandText qo'shildi
   const input = document.createElement('input');
   input.type = 'number';
   input.className = 'score-input';
   input.min = '0';
   input.max = '3';
   input.placeholder = '0-3';
-  input.name = `score_${bandId}`;
+  input.name = `score_${bandId}`; // Bu o'zgarmaydi (rasm bilan bog'liq)
   input.id = `score_${bandId}`;
 
   input.addEventListener('input', function() {
@@ -494,7 +527,14 @@ function createScoreInput(bandId, tdElement) {
     updatePercentage();
   });
 
+  // 🆕 SAVOL MATNINI YASHIRIN YUBORISH
+  const textInput = document.createElement('input');
+  textInput.type = 'hidden';
+  textInput.name = `text_${bandId}`; 
+  textInput.value = bandText; 
+
   tdElement.appendChild(input);
+  tdElement.appendChild(textInput); // <-- Yashirin inputni qo'shdik
   tdElement.classList.add('default');
 
   if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
