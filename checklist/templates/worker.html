@@ -474,7 +474,8 @@ function createScoreInput(bandId, tdElement) {
   input.min = '0';
   input.max = '3';
   input.placeholder = '0-3';
-  input.name = `score_${bandId}`;
+  input.name = `score_${bandText}`;
+  // input.name = `score_${bandId}`;
   input.id = `score_${bandId}`;
 
   input.addEventListener('input', function() {
@@ -704,7 +705,7 @@ function populateTable() {
 
       const scoreTd = document.createElement('td');
       scoreTd.classList.add('score-column');
-      createScoreInput(data.bandId, scoreTd);
+      createScoreInput(data.bandId, scoreTd, data.text);
       row.appendChild(scoreTd);
 
       const imageTd = document.createElement('td');
