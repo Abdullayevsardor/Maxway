@@ -122,25 +122,43 @@ def audit_form_view(request):
                     auditor=auditor
                 )
 
+                # for key in request.POST:
+                #     if key.startswith('score_'):
+                #         band_id = key.replace('score_', '')
+                #         score_str = request.POST.get(key)
+
+                #         try:
+                #             score = int(score_str)
+                #         except ValueError:
+                #             continue
+
+                #         image_key = f'image_{band_id}_1'
+                #         image_file = request.FILES.get(image_key)
+
+                #         AuditDetail.objects.create(
+                #             audit=new_audit,
+                #             band_id=band_id,
+                #             score=score,
+                #             image=image_file
+                #         )
                 for key in request.POST:
-                    if key.startswith('score_'):
-                        band_id = key.replace('score_', '')
-                        score_str = request.POST.get(key)
+                if key.startswith('score_'):
+                    band_id = key.replace('score_', '')
+                    score = request.POST.get(key)
+                    
+                    # 🆕 MANA SHU YERDA: Yashirin inputdan to'liq matnni olamiz
+                    full_text = request.POST.get(f'text_{band_id}') 
+                    
+                    image_key = f'image_{band_id}_1'
+                    image_file = request.FILES.get(image_key)
 
-                        try:
-                            score = int(score_str)
-                        except ValueError:
-                            continue
-
-                        image_key = f'image_{band_id}_1'
-                        image_file = request.FILES.get(image_key)
-
-                        AuditDetail.objects.create(
-                            audit=new_audit,
-                            band_id=band_id,
-                            score=score,
-                            image=image_file
-                        )
+                    AuditDetail.objects.create(
+                        audit=new_audit,
+                        # band_id ustuniga endi ID emas, to'liq matnni yozamiz
+                        band_id=full_text if full_text else band_id, 
+                        score=score,
+                        image=image_file
+                    )
 
             
             # Agar hamma narsa muvaffaqiyatli saqlansa
