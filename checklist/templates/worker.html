@@ -316,128 +316,245 @@ input[type="file"]::-webkit-file-upload-button {
 <script>
 const successUrl = "{% url 'audit_success' %}";
 
-const AUDIT_DATA = [
-  { bandId: "hujjatlar", text: "Hujjatlar saqlanishi (arxiv/papka)" },
-  // { bandId: "oxknv", text: "OXKNV chek-listi" },
-  { bandId: "xodimlar_chek_listi", text: "Xodimlar chek-listi (ishga kirishayotgan)" },
-  // { bandId: "dezinfeksiya_jurnali", text: "Dezinfeksiya jurnali" },
-  // { bandId: "bakteritsid_lampa", text: "Bakteritsid lampa jurnali" },
-  { bandId: "tibbiy_koriklar", text: "Tibbiy ko'riklar (o'tmaganlar soni) [-1: 2; -2: 1; -3: 0]" },
-  // { bandId: "sanminimum", text: "Sanminimum (guvohnomasi yo'q xodimlar soni) [-1: 2; -2: 1; -3: 0]" },
-  { bandId: "dezinfeksiya_shartnomasi", text: "Dezinfeksiya shartnomasi va aktlari" },
-  { bandId: "qol_yuvish_zaxirasi", text: "Qo'l yuvish vositasi zaxirasi" },
-  { bandId: "dori_qutisi", text: "Dori qutisidagi dori vositalari ro'yxatga asosanmi" },
-  // { bandId: "termometr_metrologiya", text: "Termometr va psixrometrlar metrologiyadan o'tkazilganmi [-1: 2; -2: 1; -3: 0]" },
-  // { bandId: "tarozilar_metrologiya", text: "Tarozilar metrologiyadan o'tkazilganmi [-1: 2; -2: 1; -3: 0]" },
+// const AUDIT_DATA = [
+//   { bandId: "hujjatlar", text: "Hujjatlar saqlanishi (arxiv/papka)" },
+//   // { bandId: "oxknv", text: "OXKNV chek-listi" },
+//   { bandId: "xodimlar_chek_listi", text: "Xodimlar chek-listi (ishga kirishayotgan)" },
+//   // { bandId: "dezinfeksiya_jurnali", text: "Dezinfeksiya jurnali" },
+//   // { bandId: "bakteritsid_lampa", text: "Bakteritsid lampa jurnali" },
+//   { bandId: "tibbiy_koriklar", text: "Tibbiy ko'riklar (o'tmaganlar soni) [-1: 2; -2: 1; -3: 0]" },
+//   // { bandId: "sanminimum", text: "Sanminimum (guvohnomasi yo'q xodimlar soni) [-1: 2; -2: 1; -3: 0]" },
+//   { bandId: "dezinfeksiya_shartnomasi", text: "Dezinfeksiya shartnomasi va aktlari" },
+//   { bandId: "qol_yuvish_zaxirasi", text: "Qo'l yuvish vositasi zaxirasi" },
+//   { bandId: "dori_qutisi", text: "Dori qutisidagi dori vositalari ro'yxatga asosanmi" },
+//   // { bandId: "termometr_metrologiya", text: "Termometr va psixrometrlar metrologiyadan o'tkazilganmi [-1: 2; -2: 1; -3: 0]" },
+//   // { bandId: "tarozilar_metrologiya", text: "Tarozilar metrologiyadan o'tkazilganmi [-1: 2; -2: 1; -3: 0]" },
 
-  { bandId: "oshxona_subheader", text: "Oshxona", subheader: true },
-  { bandId: "oshxona_qol_yuvish", text: "Oshxona: Tozalik cheklisti" },
-  { bandId: "oshxona_tozalik_sifati", text: "Oshxona: Tozalik sifati (pol, devor, plintuslar)" },
-  { bandId: "oshxona_anjom_tamgasi", text: "Oshxona: Devor, pol qoplamalarining holati" },
-  { bandId: "oshxona_xom_pishgan", text: "Oshxona: Kirishda qo'l yuvish vositalari barchasi mavjud" },
-  { bandId: "oshxona_saqlash_muddatlari", text: "Oshxona: Har soatda qo'l yuvish tartibiga rioya qilinishi" },
-  { bandId: "oshxona_joylashtirish", text: "Oshxona: Anjom va ish stollari tamg'alangan, maqsadli ishlatilishi" },
-  { bandId: "oshxona_idish_almashtirish", text: "Oshxona: Anjom va idishlar holati (materiali, sirti va h.)" },
-  { bandId: "oshxona_bitta_anjom", text: "Oshxona: Mahsulotlarning birlamchi saqlash muddatlari" },
-  { bandId: "oshxona_bodring_marinad", text: "Oshxona: Mahsulotlarning ikkilamchi saqlash muddatlari" },
-  { bandId: "oshxona_tozalash_vositalari", text: "Oshxona: Idishlar har safar yangi mahsulot solishda almashtiriladimi" },
-  { bandId: "oshxona_harorat", text: "Oshxona: Sosiskalar savdo hajmiga mos miqdorda archib qo'yilganmi" },
-  { bandId: "oshxona_sovutgich_joyi", text: "Oshxona: To'g'ralgan tuzlangan bodring o'z marinad suvida saqlanadimi" },
-  { bandId: "oshxona_issiqlik", text: "Oshxona: Sovutgich va muzlatgichlar termometri bormi" },
-  { bandId: "oshxona_gosht_aralashmasligi", text: "Oshxona: Sovutgich va muzlatgichda mahsulot qo'shnichiligiga rioya qilinishi" },
-  { bandId: "oshxona_fritur_muddat", text: "Oshxona: Sovutgich va muzlatgich ichining tozalik holati" },
-  { bandId: "oshxona_fritur_talab", text: "Oshxona: Kotlet pishirish anjomlari tamg'alanganmi" },
-  { bandId: "oshxona_ovqat_qoldigi", text: "Oshxona: Xom va pishgan g'o'sht aralashishiga yo'l qo'yilmaydimi" },
-  { bandId: "oshxona_chiqindi_urna", text: "Oshxona: Pishgan go'shtni multiholderda saqlash muddatiga rioya qilinishi" },
-  { bandId: "oshxona_issiq_suv", text: "Oshxona: Frityur yog'i talabga javob beradimi" },
-  { bandId: "oshxona_dezozvita", text: "Oshxona: Chips baki tamg'alanganmi, tozaligi" },
-  { bandId: "oshxona_Ishchi_yuzalar_chun_dezvosita_tayyorlanganmi", text: "Oshxona: Chiqindi urnalari to'lishi 2/3 qismdan oshmagan, qopqog'I yopiq" },
-  { bandId: "oshxona_Oshxona_o'rikonlar_tozaligi", text: "Oshxona: Mo'rikonlar tozaligi" },
-  { bandId: "oshxona_Ishchi_yuzalar_uchun_dezvosita_tayyorlanganmi", text: "Oshxona: Ishchi yuzalar uchun dezvosita tayyorlanganmi (2 chelak)" },
+//   { bandId: "oshxona_subheader", text: "Oshxona", subheader: true },
+//   { bandId: "oshxona_qol_yuvish", text: "Oshxona: Tozalik cheklisti" },
+//   { bandId: "oshxona_tozalik_sifati", text: "Oshxona: Tozalik sifati (pol, devor, plintuslar)" },
+//   { bandId: "oshxona_anjom_tamgasi", text: "Oshxona: Devor, pol qoplamalarining holati" },
+//   { bandId: "oshxona_xom_pishgan", text: "Oshxona: Kirishda qo'l yuvish vositalari barchasi mavjud" },
+//   { bandId: "oshxona_saqlash_muddatlari", text: "Oshxona: Har soatda qo'l yuvish tartibiga rioya qilinishi" },
+//   { bandId: "oshxona_joylashtirish", text: "Oshxona: Anjom va ish stollari tamg'alangan, maqsadli ishlatilishi" },
+//   { bandId: "oshxona_idish_almashtirish", text: "Oshxona: Anjom va idishlar holati (materiali, sirti va h.)" },
+//   { bandId: "oshxona_bitta_anjom", text: "Oshxona: Mahsulotlarning birlamchi saqlash muddatlari" },
+//   { bandId: "oshxona_bodring_marinad", text: "Oshxona: Mahsulotlarning ikkilamchi saqlash muddatlari" },
+//   { bandId: "oshxona_tozalash_vositalari", text: "Oshxona: Idishlar har safar yangi mahsulot solishda almashtiriladimi" },
+//   { bandId: "oshxona_harorat", text: "Oshxona: Sosiskalar savdo hajmiga mos miqdorda archib qo'yilganmi" },
+//   { bandId: "oshxona_sovutgich_joyi", text: "Oshxona: To'g'ralgan tuzlangan bodring o'z marinad suvida saqlanadimi" },
+//   { bandId: "oshxona_issiqlik", text: "Oshxona: Sovutgich va muzlatgichlar termometri bormi" },
+//   { bandId: "oshxona_gosht_aralashmasligi", text: "Oshxona: Sovutgich va muzlatgichda mahsulot qo'shnichiligiga rioya qilinishi" },
+//   { bandId: "oshxona_fritur_muddat", text: "Oshxona: Sovutgich va muzlatgich ichining tozalik holati" },
+//   { bandId: "oshxona_fritur_talab", text: "Oshxona: Kotlet pishirish anjomlari tamg'alanganmi" },
+//   { bandId: "oshxona_ovqat_qoldigi", text: "Oshxona: Xom va pishgan g'o'sht aralashishiga yo'l qo'yilmaydimi" },
+//   { bandId: "oshxona_chiqindi_urna", text: "Oshxona: Pishgan go'shtni multiholderda saqlash muddatiga rioya qilinishi" },
+//   { bandId: "oshxona_issiq_suv", text: "Oshxona: Frityur yog'i talabga javob beradimi" },
+//   { bandId: "oshxona_dezozvita", text: "Oshxona: Chips baki tamg'alanganmi, tozaligi" },
+//   { bandId: "oshxona_Ishchi_yuzalar_chun_dezvosita_tayyorlanganmi", text: "Oshxona: Chiqindi urnalari to'lishi 2/3 qismdan oshmagan, qopqog'I yopiq" },
+//   { bandId: "oshxona_Oshxona_o'rikonlar_tozaligi", text: "Oshxona: Mo'rikonlar tozaligi" },
+//   { bandId: "oshxona_Ishchi_yuzalar_uchun_dezvosita_tayyorlanganmi", text: "Oshxona: Ishchi yuzalar uchun dezvosita tayyorlanganmi (2 chelak)" },
 
 
-  { bandId: "salatxona_subheaderi", text: "Salatxona", subheader: true },
-  { bandId: "salatxona_tozalik", text: "Salatchi: Tozalik cheklisti" },
-  { bandId: "salatxona_anjom_yuvish_suv", text: "Salatchi: Tozalik sifati (pol, devor, plintuslar)" },
-  { bandId: "salatxona_harorat", text: "Salatchi: Devor, pol qoplamalarining holati" },
-  { bandId: "salatxona_sovutgich_rioya", text: "Salatchi: Nazorat termometri bor, harorat talab darajasida" },
-  { bandId: "salatxona_mahsulot_qoshniligi", text: "Salatchi: Sovutgich va muzlatgich ichining tozalik holati" },
-  { bandId: "salatxona_maxsus_qoidalar", text: "Salatchi: Sovutgich ichida mahsulot qo'shnichiligi" },
-  { bandId: "salatxona_anjomlar_maqsad", text: "Salatchi: Mahsulotlar ikkilamchi saqlash muddatlari belgilangan" },
-  { bandId: "salatxona_anjom_toza", text: "Salatchi: Anjomlar maqsadlii ishlatiladi (pichoq, taxtakach va h.)" },
-  { bandId: "salatxona_sabzavot_urna", text: "Salatchi: Xodim sabzavot va ko'kat yuvish yo'riqnomasiga asosan ishlaydi" },
-  { bandId: "salatxona_sovuq_ishlov_", text: "Salatchi: Sabzavot va ko'kat qoldiqlari uchun urna tamg'alangan" },
+//   { bandId: "salatxona_subheaderi", text: "Salatxona", subheader: true },
+//   { bandId: "salatxona_tozalik", text: "Salatchi: Tozalik cheklisti" },
+//   { bandId: "salatxona_anjom_yuvish_suv", text: "Salatchi: Tozalik sifati (pol, devor, plintuslar)" },
+//   { bandId: "salatxona_harorat", text: "Salatchi: Devor, pol qoplamalarining holati" },
+//   { bandId: "salatxona_sovutgich_rioya", text: "Salatchi: Nazorat termometri bor, harorat talab darajasida" },
+//   { bandId: "salatxona_mahsulot_qoshniligi", text: "Salatchi: Sovutgich va muzlatgich ichining tozalik holati" },
+//   { bandId: "salatxona_maxsus_qoidalar", text: "Salatchi: Sovutgich ichida mahsulot qo'shnichiligi" },
+//   { bandId: "salatxona_anjomlar_maqsad", text: "Salatchi: Mahsulotlar ikkilamchi saqlash muddatlari belgilangan" },
+//   { bandId: "salatxona_anjom_toza", text: "Salatchi: Anjomlar maqsadlii ishlatiladi (pichoq, taxtakach va h.)" },
+//   { bandId: "salatxona_sabzavot_urna", text: "Salatchi: Xodim sabzavot va ko'kat yuvish yo'riqnomasiga asosan ishlaydi" },
+//   { bandId: "salatxona_sovuq_ishlov_", text: "Salatchi: Sabzavot va ko'kat qoldiqlari uchun urna tamg'alangan" },
  
-  { bandId: "moykova_subheader", text: "Moyka", subheader: true },
-  { bandId: "moykova_tozalik", text: "Moyka: Tozalik cheklisti" },
-  { bandId: "moykova_qoplamalar", text: "Moyka: Tozalik sifati (pol, devor, plintuslar)" },
-  { bandId: "moykova_yuvish_vositalari", text: "Moyka: Devor, pol qoplamalarining holati" },
-  { bandId: "moykova_chotka", text: "Moyka: Anjom va idishlar yuvilishi yo'riqnomaga asosan" },
-  { bandId: "moykova_yuvish_jarayoni", text: "Moyka: Anjom va idish yuvish uchun chotka va b. vositalar holati" },
-  { bandId: "moykova_toza_anjom", text: "Moyka: Stellaj holati, tamg'alanganligi" },
-  { bandId: "moykova_kir_anjom", text: "Moyka: Toza anjomlar saqlanishi, maxsus konteyner mavjudmi" },
-  { bandId: "moykova_jiroluvittel_tozaligi", text: "Moyka: Jiroulovitel chek-listi" },
-  { bandId: "moykova_jiroluvittel_dezinfeksiya", text: "Moyka: Jiroulovitel tozaligi" },
-  { bandId: "moykova_ovqat_qoldigi_urna", text: "Moyka: Yuvish anjomlarini dezinfeksiyasi uchun idish tamg'alangan" },
-  { bandId: "moykova_ishchi_kiyim", text: "Moyka: Ovqat qoldiqlari uchun urna tamg'alangan, 2/3 to'lganda tozalanadi" },
-  { bandId: "moykova_dezmodda_tayyorlash", text: "Moyka: Dezmodda zaxirasi" },
-  // { bandId: "moyka_Dezmodda_to'g'ri_tayyorlanishi", text: "Moyka: Dezmodda to'g'ri tayyorlanishi va qo'llanishi (konsentratsiya)" },
+//   { bandId: "moykova_subheader", text: "Moyka", subheader: true },
+//   { bandId: "moykova_tozalik", text: "Moyka: Tozalik cheklisti" },
+//   { bandId: "moykova_qoplamalar", text: "Moyka: Tozalik sifati (pol, devor, plintuslar)" },
+//   { bandId: "moykova_yuvish_vositalari", text: "Moyka: Devor, pol qoplamalarining holati" },
+//   { bandId: "moykova_chotka", text: "Moyka: Anjom va idishlar yuvilishi yo'riqnomaga asosan" },
+//   { bandId: "moykova_yuvish_jarayoni", text: "Moyka: Anjom va idish yuvish uchun chotka va b. vositalar holati" },
+//   { bandId: "moykova_toza_anjom", text: "Moyka: Stellaj holati, tamg'alanganligi" },
+//   { bandId: "moykova_kir_anjom", text: "Moyka: Toza anjomlar saqlanishi, maxsus konteyner mavjudmi" },
+//   { bandId: "moykova_jiroluvittel_tozaligi", text: "Moyka: Jiroulovitel chek-listi" },
+//   { bandId: "moykova_jiroluvittel_dezinfeksiya", text: "Moyka: Jiroulovitel tozaligi" },
+//   { bandId: "moykova_ovqat_qoldigi_urna", text: "Moyka: Yuvish anjomlarini dezinfeksiyasi uchun idish tamg'alangan" },
+//   { bandId: "moykova_ishchi_kiyim", text: "Moyka: Ovqat qoldiqlari uchun urna tamg'alangan, 2/3 to'lganda tozalanadi" },
+//   { bandId: "moykova_dezmodda_tayyorlash", text: "Moyka: Dezmodda zaxirasi" },
+//   // { bandId: "moyka_Dezmodda_to'g'ri_tayyorlanishi", text: "Moyka: Dezmodda to'g'ri tayyorlanishi va qo'llanishi (konsentratsiya)" },
 
-  { bandId: "ombor_subheader", text: "Ombor", subheader: true },
-  { bandId: "ombor_harorat", text: "Ombor: Tozalik sifati (pol, devor, plintuslar)" },
-  { bandId: "ombor_saqlash_muddat", text: "Ombor: Termometr va psixrometr soz. Harorat va namlik talab darajasida" },
-  { bandId: "ombor_stellajlar", text: "Ombor: Stellajlar tamg'alangan va maqsadli ishlatiladi" },
-  { bandId: "ombor_joylashuv", text: "Ombor: Stellajlar tagi va usti tozalangan va begona buyumlar yo'q" },
-  { bandId: "ombor_yaroqlilik_sanasi", text: "Ombor: Mahsulotlar qo'shnichiligiga rioya qilinishi (oziq/nooziq va h.)" },
-  { bandId: "ombor_tozalash_vositalari", text: "Ombor: Mahsulotlar yerda saqlanishiga yo'l qo'yilmagan" },
-  // { bandId: "ombor_quruq_hol", text: "Ombor: Taralar markerlangan, mahsulotlar tara nomiga asosan joylashtirilgan" },
-  { bandId: "ombor_muzlatgich_termometr", text: "Ombor: Muddati o'tgan mahsulotlar yo'q" },
-  // { bandId: "ombor_mahsulot_qoshniligi", text: "Ombor: Sovutgich va muzlatgich nazorat termometrlari bor" },
-  { bandId: "ombor_harorat_qoshniligi", text: "Ombor: Sovutgich va muzlatgich kamerada yoritish manbasi soz" },
-  { bandId: "ombor_tartib", text: "Ombor: Sovutgich va muzlatgichda mahsulot qo'shnichiligi" },
-  { bandId: "ombor_qadoqlangan", text: "Ombor: Sovutgich va muzlatgich ichining tozalik holati" },
-  { bandId: "ombor_begona_buyumlar", text: "Ombor: Qadoqlar yopiq holda (korobkasi yopiq)" },
-  { bandId: "ombor_Begonabuyumlar_mavjudmi", text: "Ombor: Begona buyumlar mavjudmi" },
+//   { bandId: "ombor_subheader", text: "Ombor", subheader: true },
+//   { bandId: "ombor_harorat", text: "Ombor: Tozalik sifati (pol, devor, plintuslar)" },
+//   { bandId: "ombor_saqlash_muddat", text: "Ombor: Termometr va psixrometr soz. Harorat va namlik talab darajasida" },
+//   { bandId: "ombor_stellajlar", text: "Ombor: Stellajlar tamg'alangan va maqsadli ishlatiladi" },
+//   { bandId: "ombor_joylashuv", text: "Ombor: Stellajlar tagi va usti tozalangan va begona buyumlar yo'q" },
+//   { bandId: "ombor_yaroqlilik_sanasi", text: "Ombor: Mahsulotlar qo'shnichiligiga rioya qilinishi (oziq/nooziq va h.)" },
+//   { bandId: "ombor_tozalash_vositalari", text: "Ombor: Mahsulotlar yerda saqlanishiga yo'l qo'yilmagan" },
+//   // { bandId: "ombor_quruq_hol", text: "Ombor: Taralar markerlangan, mahsulotlar tara nomiga asosan joylashtirilgan" },
+//   { bandId: "ombor_muzlatgich_termometr", text: "Ombor: Muddati o'tgan mahsulotlar yo'q" },
+//   // { bandId: "ombor_mahsulot_qoshniligi", text: "Ombor: Sovutgich va muzlatgich nazorat termometrlari bor" },
+//   { bandId: "ombor_harorat_qoshniligi", text: "Ombor: Sovutgich va muzlatgich kamerada yoritish manbasi soz" },
+//   { bandId: "ombor_tartib", text: "Ombor: Sovutgich va muzlatgichda mahsulot qo'shnichiligi" },
+//   { bandId: "ombor_qadoqlangan", text: "Ombor: Sovutgich va muzlatgich ichining tozalik holati" },
+//   { bandId: "ombor_begona_buyumlar", text: "Ombor: Qadoqlar yopiq holda (korobkasi yopiq)" },
+//   { bandId: "ombor_Begonabuyumlar_mavjudmi", text: "Ombor: Begona buyumlar mavjudmi" },
 
-  { bandId: "koridor_subheader", text: "Koridor", subheader: true },
-  { bandId: "koridor_tozalik", text: "Koridor: Tozalik holati" },
-  { bandId: "koridor_tosiq", text: "Koridor: Mahsulot bilan to'sib qo'yilmagan" },
-  { bandId: "koridor_qoplama", text: "Koridor: Devor va pollar qoplamasi holati" },
-  { bandId: "koridor_begona_narsalar", text: "Koridor: Kimyoviy vositalar shkafida begona narsalar bormi, qulflanadimi" },
-  { bandId: "koridor_dezbarer", text: "Koridor: Xodimlar hojatxonasidan chiqishda dezbar'yer bormi" },
-  { bandId: "koridor_bezaklar", text: "Koridor: Mop uchun xona yoki joy ajratilganmi" },
-  { bandId: "koridor_mop_yuvish", text: "Koridor: Mop anjomlari yo'riqnomaga asosan yuviladi, zararsizlantiriladi" },
-  { bandId: "koridor_mop_sarasizlantirish", text: "Koridor: Mop anjomlarini quritish uchun alohida moslamalar mavjud" },
-  { bandId: "koridor_mop_saqlash", text: "Koridor: Mop anjomlari saqlanishi (Hojatxona anjomlari alohida)" },
+//   { bandId: "koridor_subheader", text: "Koridor", subheader: true },
+//   { bandId: "koridor_tozalik", text: "Koridor: Tozalik holati" },
+//   { bandId: "koridor_tosiq", text: "Koridor: Mahsulot bilan to'sib qo'yilmagan" },
+//   { bandId: "koridor_qoplama", text: "Koridor: Devor va pollar qoplamasi holati" },
+//   { bandId: "koridor_begona_narsalar", text: "Koridor: Kimyoviy vositalar shkafida begona narsalar bormi, qulflanadimi" },
+//   { bandId: "koridor_dezbarer", text: "Koridor: Xodimlar hojatxonasidan chiqishda dezbar'yer bormi" },
+//   { bandId: "koridor_bezaklar", text: "Koridor: Mop uchun xona yoki joy ajratilganmi" },
+//   { bandId: "koridor_mop_yuvish", text: "Koridor: Mop anjomlari yo'riqnomaga asosan yuviladi, zararsizlantiriladi" },
+//   { bandId: "koridor_mop_sarasizlantirish", text: "Koridor: Mop anjomlarini quritish uchun alohida moslamalar mavjud" },
+//   { bandId: "koridor_mop_saqlash", text: "Koridor: Mop anjomlari saqlanishi (Hojatxona anjomlari alohida)" },
   
 
-  { bandId: "zal_subheader", text: "Zal", subheader: true },
-  { bandId: "zal_tozalik", text: "Zal: Tozalik chek-listi" },
-  { bandId: "zal_dezinfeksiya", text: "Zal: Tozalik holati" },
-  { bandId: "zal_hojatxona_pol_dez", text: "Zal: Mijozdan keyin stollarni dezinfeksiya qilinishi" },
-  { bandId: "zal_hojatxona_tozalik", text: "Zal: Patnislar tozalik holati (mijozdan keyin va smena oxirida tozalanishi)" },
-  { bandId: "zal_qol_yuvish", text: "Zal: Zaldan oshxonaga kirishda dezbar'yer" },
-  { bandId: "zal_hojatxona_vosita", text: "Zal: Qo'l yuvish vositalari to'liq va soz" },
-  { bandId: "zal_hojatxona_eshik_yeli", text: "Zal: Hojatxona tozalash chek-listi" },
-  { bandId: "zal_hojatxona_tozalik_vosita_2", text: "Zal: Hojatxona tozalik holati" },
+//   { bandId: "zal_subheader", text: "Zal", subheader: true },
+//   { bandId: "zal_tozalik", text: "Zal: Tozalik chek-listi" },
+//   { bandId: "zal_dezinfeksiya", text: "Zal: Tozalik holati" },
+//   { bandId: "zal_hojatxona_pol_dez", text: "Zal: Mijozdan keyin stollarni dezinfeksiya qilinishi" },
+//   { bandId: "zal_hojatxona_tozalik", text: "Zal: Patnislar tozalik holati (mijozdan keyin va smena oxirida tozalanishi)" },
+//   { bandId: "zal_qol_yuvish", text: "Zal: Zaldan oshxonaga kirishda dezbar'yer" },
+//   { bandId: "zal_hojatxona_vosita", text: "Zal: Qo'l yuvish vositalari to'liq va soz" },
+//   { bandId: "zal_hojatxona_eshik_yeli", text: "Zal: Hojatxona tozalash chek-listi" },
+//   { bandId: "zal_hojatxona_tozalik_vosita_2", text: "Zal: Hojatxona tozalik holati" },
 
-  { bandId: "personal_subheader", text: "Personal", subheader: true },
-  { bandId: "personal_kiyim_holati", text: "Personal: Xodimlar ish kiyimining holati" },
-  { bandId: "personal_kiyim", text: "Personal: Xodimlar tirnog'i, sochi, soqoli" },
-  { bandId: "personal_zargarlik", text: "Personal: Zargarlik va shunga o'xshash buyumlar bilan ishlash" },
-  { bandId: "personal_yurish", text: "Personal: Xodimlar kiyim almashtirish xonasi va dush holati" },
-  { bandId: "personal_kiyim_saqlash", text: "Personal: Xodimlar shaxsiy kiyimi va ish kiyimi saqlanishi" },
-  { bandId: "personal_qol_yuvish", text: "Personal: Operatsiya almashtirganda kompaniya standartlariga rioya qilishi" },
+//   { bandId: "personal_subheader", text: "Personal", subheader: true },
+//   { bandId: "personal_kiyim_holati", text: "Personal: Xodimlar ish kiyimining holati" },
+//   { bandId: "personal_kiyim", text: "Personal: Xodimlar tirnog'i, sochi, soqoli" },
+//   { bandId: "personal_zargarlik", text: "Personal: Zargarlik va shunga o'xshash buyumlar bilan ishlash" },
+//   { bandId: "personal_yurish", text: "Personal: Xodimlar kiyim almashtirish xonasi va dush holati" },
+//   { bandId: "personal_kiyim_saqlash", text: "Personal: Xodimlar shaxsiy kiyimi va ish kiyimi saqlanishi" },
+//   { bandId: "personal_qol_yuvish", text: "Personal: Operatsiya almashtirganda kompaniya standartlariga rioya qilishi" },
 
-  { bandId: "hudud_subheader", text: "Hudud", subheader: true },
-  { bandId: "hudud_tozalash_jixoz", text: "Hudud: Korxona tashqi hududini tozalash jixozlari uchun joy" },
-  { bandId: "hudud_sanitariya", text: "Hudud: Tashqi oynalar tozaligi" },
-  { bandId: "hudud_deraza_tor", text: "Hudud: Ko'chaga qaragan derazalar hasharotga qarshi to'r bilan to'silganmi" },
-  { bandId: "hudud_dezinfeksiya", text: "Hudud: Kemiruvchilarga qarshi tuzoqlar yetarlimi (tashqarida va ichkarida)" },
-  { bandId: "hudud_trotuar", text: "Hudud: Trotuar va ariqlar tozaligi" },
-  { bandId: "hudud_dezinfeksiya_talab", text: "Hudud: Chiqindi yig'ish joyining talabga javob berishi (maydoni, tozalash)" }
-];
+//   { bandId: "hudud_subheader", text: "Hudud", subheader: true },
+//   { bandId: "hudud_tozalash_jixoz", text: "Hudud: Korxona tashqi hududini tozalash jixozlari uchun joy" },
+//   { bandId: "hudud_sanitariya", text: "Hudud: Tashqi oynalar tozaligi" },
+//   { bandId: "hudud_deraza_tor", text: "Hudud: Ko'chaga qaragan derazalar hasharotga qarshi to'r bilan to'silganmi" },
+//   { bandId: "hudud_dezinfeksiya", text: "Hudud: Kemiruvchilarga qarshi tuzoqlar yetarlimi (tashqarida va ichkarida)" },
+//   { bandId: "hudud_trotuar", text: "Hudud: Trotuar va ariqlar tozaligi" },
+//   { bandId: "hudud_dezinfeksiya_talab", text: "Hudud: Chiqindi yig'ish joyining talabga javob berishi (maydoni, tozalash)" }
+// ];
 
+const AUDIT_DATA = {
+  // Umumiy hujjatlar
+  "hujjatlar": { text: "Hujjatlar saqlanishi (arxiv/papka)" },
+  "xodimlar_chek_listi": { text: "Xodimlar chek-listi (ishga kirishayotgan)" },
+  "tibbiy_koriklar": { text: "Tibbiy ko'riklar (o'tmaganlar soni) [-1: 2; -2: 1; -3: 0]" },
+  "dezinfeksiya_shartnomasi": { text: "Dezinfeksiya shartnomasi va aktlari" },
+  "qol_yuvish_zaxirasi": { text: "Qo'l yuvish vositasi zaxirasi" },
+  "dori_qutisi": { text: "Dori qutisidagi dori vositalari ro'yxatga asosanmi" },
+
+  // Oshxona (Sarlavha va bandlar)
+  "oshxona_header": { text: "Oshxona", subheader: true },
+  "oshxona_qol_yuvish": { text: "Oshxona: Tozalik cheklisti" },
+  "oshxona_tozalik_sifati": { text: "Oshxona: Tozalik sifati (pol, devor, plintuslar)" },
+  "oshxona_anjom_tamgasi": { text: "Oshxona: Devor, pol qoplamalarining holati" },
+  "oshxona_xom_pishgan": { text: "Oshxona: Kirishda qo'l yuvish vositalari barchasi mavjud" },
+  "oshxona_saqlash_muddatlari": { text: "Oshxona: Har soatda qo'l yuvish tartibiga rioya qilinishi" },
+  "oshxona_joylashtirish": { text: "Oshxona: Anjom va ish stollari tamg'alangan, maqsadli ishlatilishi" },
+  "oshxona_idish_almashtirish": { text: "Oshxona: Anjom va idishlar holati (materiali, sirti va h.)" },
+  "oshxona_bitta_anjom": { text: "Oshxona: Mahsulotlarning birlamchi saqlash muddatlari" },
+  "oshxona_bodring_marinad": { text: "Oshxona: Mahsulotlarning ikkilamchi saqlash muddatlari" },
+  "oshxona_tozalash_vositalari": { text: "Oshxona: Idishlar har safar yangi mahsulot solishda almashtiriladimi" },
+  "oshxona_harorat": { text: "Oshxona: Sosiskalar savdo hajmiga mos miqdorda archib qo'yilganmi" },
+  "oshxona_sovutgich_joyi": { text: "Oshxona: To'g'ralgan tuzlangan bodring o'z marinad suvida saqlanadimi" },
+  "oshxona_issiqlik": { text: "Oshxona: Sovutgich va muzlatgichlar termometri bormi" },
+  "oshxona_gosht_aralashmasligi": { text: "Oshxona: Sovutgich va muzlatgichda mahsulot qo'shnichiligiga rioya qilinishi" },
+  "oshxona_fritur_muddat": { text: "Oshxona: Sovutgich va muzlatgich ichining tozalik holati" },
+  "oshxona_fritur_talab": { text: "Oshxona: Kotlet pishirish anjomlari tamg'alanganmi" },
+  "oshxona_ovqat_qoldigi": { text: "Oshxona: Xom va pishgan g'o'sht aralashishiga yo'l qo'yilmaydimi" },
+  "oshxona_chiqindi_urna": { text: "Oshxona: Pishgan go'shtni multiholderda saqlash muddatiga rioya qilinishi" },
+  "oshxona_issiq_suv": { text: "Oshxona: Frityur yog'i talabga javob beradimi" },
+  "oshxona_dezozvita": { text: "Oshxona: Chips baki tamg'alanganmi, tozaligi" },
+  "oshxona_chiqindi_23": { text: "Oshxona: Chiqindi urnalari to'lishi 2/3 qismdan oshmagan, qopqog'I yopiq" },
+  "oshxona_morikon_tozaligi": { text: "Oshxona: Mo'rikonlar tozaligi" },
+  "oshxona_dezvosita_tayyor": { text: "Oshxona: Ishchi yuzalar uchun dezvosita tayyorlanganmi (2 chelak)" },
+
+  // Salatxona
+  "salatxona_header": { text: "Salatxona", subheader: true },
+  "salatxona_tozalik": { text: "Salatchi: Tozalik cheklisti" },
+  "salatxona_tozalik_sifati": { text: "Salatchi: Tozalik sifati (pol, devor, plintuslar)" },
+  "salatxona_qoplamalar": { text: "Salatchi: Devor, pol qoplamalarining holati" },
+  "salatxona_sovutgich_rioya": { text: "Salatchi: Nazorat termometri bor, harorat talab darajasida" },
+  "salatxona_sovutgich_tozalik": { text: "Salatchi: Sovutgich va muzlatgich ichining tozalik holati" },
+  "salatxona_mahsulot_qoshniligi": { text: "Salatchi: Sovutgich ichida mahsulot qo'shnichiligi" },
+  "salatxona_maxsus_qoidalar": { text: "Salatchi: Mahsulotlar ikkilamchi saqlash muddatlari belgilangan" },
+  "salatxona_anjomlar_maqsad": { text: "Salatchi: Anjomlar maqsadlii ishlatiladi (pichoq, taxtakach va h.)" },
+  "salatxona_sabzavot_yuvish": { text: "Salatchi: Xodim sabzavot va ko'kat yuvish yo'riqnomasiga asosan ishlaydi" },
+  "salatxona_sabzavot_urna": { text: "Salatchi: Sabzavot va ko'kat qoldiqlari uchun urna tamg'alangan" },
+
+  // Moyka
+  "moyka_header": { text: "Moyka", subheader: true },
+  "moyka_tozalik": { text: "Moyka: Tozalik cheklisti" },
+  "moyka_tozalik_sifati": { text: "Moyka: Tozalik sifati (pol, devor, plintuslar)" },
+  "moyka_qoplamalar": { text: "Moyka: Devor, pol qoplamalarining holati" },
+  "moyka_yuvish_yoriqnoma": { text: "Moyka: Anjom va idishlar yuvilishi yo'riqnomaga asosan" },
+  "moyka_yuvish_vositalari": { text: "Moyka: Anjom va idish yuvish uchun chotka va b. vositalar holati" },
+  "moyka_stellaj": { text: "Moyka: Stellaj holati, tamg'alanganligi" },
+  "moyka_toza_anjom": { text: "Moyka: Toza anjomlar saqlanishi, maxsus konteyner mavjudmi" },
+  "moyka_jiroluvittel_list": { text: "Moyka: Jiroulovitel chek-listi" },
+  "moyka_jiroluvittel_tozaligi": { text: "Moyka: Jiroulovitel tozaligi" },
+  "moyka_dez_idish": { text: "Moyka: Yuvish anjomlarini dezinfeksiyasi uchun idish tamg'alangan" },
+  "moyka_urna": { text: "Moyka: Ovqat qoldiqlari uchun urna tamg'alangan, 2/3 to'lganda tozalanadi" },
+  "moyka_dez_zaxira": { text: "Moyka: Dezmodda zaxirasi" },
+
+  // Ombor
+  "ombor_header": { text: "Ombor", subheader: true },
+  "ombor_tozalik_sifati": { text: "Ombor: Tozalik sifati (pol, devor, plintuslar)" },
+  "ombor_harorat_namlik": { text: "Ombor: Termometr va psixrometr soz. Harorat va namlik talab darajasida" },
+  "ombor_stellaj_maqsad": { text: "Ombor: Stellajlar tamg'alangan va maqsadli ishlatiladi" },
+  "ombor_stellaj_tozalik": { text: "Ombor: Stellajlar tagi va usti tozalangan va begona buyumlar yo'q" },
+  "ombor_mahsulot_qoshnichiligi": { text: "Ombor: Mahsulotlar qo'shnichiligiga rioya qilinishi (oziq/nooziq va h.)" },
+  "ombor_yerda_saqlash": { text: "Ombor: Mahsulotlar yerda saqlanishiga yo'l qo'yilmagan" },
+  "ombor_muddati_otgan": { text: "Ombor: Muddati o'tgan mahsulotlar yo'q" },
+  "ombor_yoritish": { text: "Ombor: Sovutgich va muzlatgich kamerada yoritish manbasi soz" },
+  "ombor_kamera_qoshnichilik": { text: "Ombor: Sovutgich va muzlatgichda mahsulot qo'shnichiligi" },
+  "ombor_kamera_tozalik": { text: "Ombor: Sovutgich va muzlatgich ichining tozalik holati" },
+  "ombor_qadoqlar": { text: "Ombor: Qadoqlar yopiq holda (korobkasi yopiq)" },
+  "ombor_begona_buyum": { text: "Ombor: Begona buyumlar mavjudmi" },
+
+  // Koridor va boshqalar... (Sizda borlari bo'yicha davom etadi)
+  "koridor_header": { text: "Koridor", subheader: true },
+  "koridor_tozalik": { text: "Koridor: Tozalik holati" },
+  "koridor_tosiq": { text: "Koridor: Mahsulot bilan to'sib qo'yilmagan" },
+  "koridor_qoplama": { text: "Koridor: Devor va pollar qoplamasi holati" },
+  "koridor_kimyo_shkaf": { text: "Koridor: Kimyoviy vositalar shkafida begona narsalar bormi, qulflanadimi" },
+  "koridor_hojatxona_dez": { text: "Koridor: Xodimlar hojatxonasidan chiqishda dezbar'yer bormi" },
+  "koridor_mop_joy": { text: "Koridor: Mop uchun xona yoki joy ajratilganmi" },
+  "koridor_mop_yuvish": { text: "Koridor: Mop anjomlari yo'riqnomaga asosan yuviladi, zararsizlantiriladi" },
+  "koridor_mop_quritish": { text: "Koridor: Mop anjomlarini quritish uchun alohida moslamalar mavjud" },
+  "koridor_mop_saqlash": { text: "Koridor: Mop anjomlari saqlanishi (Hojatxona anjomlari alohida)" },
+
+  "zal_header": { text: "Zal", subheader: true },
+  "zal_cheklist": { text: "Zal: Tozalik chek-listi" },
+  "zal_tozalik": { text: "Zal: Tozalik holati" },
+  "zal_stol_dez": { text: "Zal: Mijozdan keyin stollarni dezinfeksiya qilinishi" },
+  "zal_patnis": { text: "Zal: Patnislar tozalik holati (mijozdan keyin va smena oxirida tozalanishi)" },
+  "zal_dezbarer": { text: "Zal: Zaldan oshxonaga kirishda dezbar'yer" },
+  "zal_qol_yuvish": { text: "Zal: Qo'l yuvish vositalari to'liq va soz" },
+  "zal_hojatxona_list": { text: "Zal: Hojatxona tozalash chek-listi" },
+  "zal_hojatxona_tozalik": { text: "Zal: Hojatxona tozalik holati" },
+
+  "personal_header": { text: "Personal", subheader: true },
+  "personal_kiyim": { text: "Personal: Xodimlar ish kiyimining holati" },
+  "personal_tashqi_korinish": { text: "Personal: Xodimlar tirnog'i, sochi, soqoli" },
+  "personal_zargarlik": { text: "Personal: Zargarlik va shunga o'xshash buyumlar bilan ishlash" },
+  "personal_kiyim_almashtirish": { text: "Personal: Xodimlar kiyim almashtirish xonasi va dush holati" },
+  "personal_saqlash": { text: "Personal: Xodimlar shaxsiy kiyimi va ish kiyimi saqlanishi" },
+  "personal_operatsiya": { text: "Personal: Operatsiya almashtirganda kompaniya standartlariga rioya qilishi" },
+
+  "hudud_header": { text: "Hudud", subheader: true },
+  "hudud_joy": { text: "Hudud: Korxona tashqi hududini tozalash jixozlari uchun joy" },
+  "hudud_oyna": { text: "Hudud: Tashqi oynalar tozaligi" },
+  "hudud_tor": { text: "Hudud: Ko'chaga qaragan derazalar hasharotga qarshi to'r bilan to'silganmi" },
+  "hudud_tuzoq": { text: "Hudud: Kemiruvchilarga qarshi tuzoqlar yetarlimi (tashqarida va ichkarida)" },
+  "hudud_trotuar": { text: "Hudud: Trotuar va ariqlar tozaligi" },
+  "hudud_chiqindi": { text: "Hudud: Chiqindi yig'ish joyining talabga javob berishi (maydoni, tozalash)" }
+};
+  
 // --- Global ---
 let currentFilialName = '';
 let allScores = {};
@@ -467,7 +584,39 @@ function updatePercentage() {
   document.getElementById('hiddenTotalPercentage').value = finalPercentage.toFixed(2);
 }
 
-function createScoreInput(bandId, tdElement) {
+// function createScoreInput(bandId, tdElement) {
+//   const input = document.createElement('input');
+//   input.type = 'number';
+//   input.className = 'score-input';
+//   input.min = '0';
+//   input.max = '3';
+//   input.placeholder = '0-3';
+//   input.name = `score_${bandId}`;
+//   input.id = `score_${bandId}`;
+
+//   input.addEventListener('input', function() {
+//     let score = this.value.trim();
+//     if (score !== '' && (parseInt(score) < 0 || parseInt(score) > 3 || score.length > 1)) {
+//       this.value = '';
+//       score = '';
+//     }
+
+//     tdElement.classList.remove('green', 'yellow', 'red', 'default');
+//     tdElement.classList.add(getColorClass(score));
+
+//     if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
+//     allScores[bandId].score = score;
+//     setInvalidState(this, this.value.trim() === '');
+
+//     updatePercentage();
+//   });
+
+//   tdElement.appendChild(input);
+//   tdElement.classList.add('default');
+
+//   if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
+// }
+function createScoreInput(bandId, tdElement, bandText) {
   const input = document.createElement('input');
   input.type = 'number';
   input.className = 'score-input';
@@ -477,29 +626,27 @@ function createScoreInput(bandId, tdElement) {
   input.name = `score_${bandId}`;
   input.id = `score_${bandId}`;
 
+  // YASHIRIN INPUT: Savol matnini yuborish uchun
+  const textInput = document.createElement('input');
+  textInput.type = 'hidden';
+  textInput.name = `text_${bandId}`;
+  textInput.value = bandText;
+
   input.addEventListener('input', function() {
     let score = this.value.trim();
-    if (score !== '' && (parseInt(score) < 0 || parseInt(score) > 3 || score.length > 1)) {
+    if (score !== '' && (parseInt(score) < 0 || parseInt(score) > 3)) {
       this.value = '';
       score = '';
     }
-
     tdElement.classList.remove('green', 'yellow', 'red', 'default');
     tdElement.classList.add(getColorClass(score));
-
-    if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
-    allScores[bandId].score = score;
-    setInvalidState(this, this.value.trim() === '');
-
     updatePercentage();
   });
 
   tdElement.appendChild(input);
+  tdElement.appendChild(textInput); // Yashirin inputni qo'shish
   tdElement.classList.add('default');
-
-  if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
 }
- 
   
 function createImageUploaders(bandId, tdElement) {
   const inputContainer = document.createElement('div');
@@ -669,36 +816,33 @@ function populateTable() {
   const tbody = document.getElementById('audit-body');
   tbody.innerHTML = '';
 
-  AUDIT_DATA.forEach(data => {
+  // Dictionary ichida aylanib chiqamiz
+  Object.keys(AUDIT_DATA).forEach(bandId => {
+    const data = AUDIT_DATA[bandId];
     const row = document.createElement('tr');
 
     if (data.subheader) {
       row.classList.add('subheader-row');
       row.innerHTML = `<th colspan="3">${data.text}</th>`;
     } else {
-      row.setAttribute('data-band-id', data.bandId);
+      row.setAttribute('data-band-id', bandId);
 
       const bandTd = document.createElement('td');
-      bandTd.textContent = data.text; // Bu ekranda savol matnini ko'rsatadi
+      bandTd.textContent = data.text;
       row.appendChild(bandTd);
 
       const scoreTd = document.createElement('td');
       scoreTd.classList.add('score-column');
-      
-      // ✅ MUHIM: data.text uchinchi argument sifatida berildi
-      createScoreInput(data.bandId, scoreTd, data.text); 
-      
+      createScoreInput(bandId, scoreTd, data.text); // data.text yuborilyapti
       row.appendChild(scoreTd);
 
       const imageTd = document.createElement('td');
       imageTd.classList.add('image-column');
-      createImageUploaders(data.bandId, imageTd);
+      createImageUploaders(bandId, imageTd);
       row.appendChild(imageTd);
     }
-
     tbody.appendChild(row);
   });
-
   updatePercentage();
 }
 
