@@ -3,7 +3,7 @@ FROM python:3.12-slim
 # Muhit o'zgaruvchilari
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-
+ENV TZ="Asia/Tashkent"
 WORKDIR /app
 
 # Tizim paketlari
