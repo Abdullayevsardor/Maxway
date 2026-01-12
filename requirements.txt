@@ -17,4 +17,5 @@ sqlparse==0.5.4
 static3==0.7.0
 tzdata==2025.2
 whitenoise==6.11.0
-django-storage-supabase
+django-storages
+django-storage-supabas
