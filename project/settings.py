@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #apps
     'checklist',
     'rest_framework',
+    'storages',
 
 ]
 
@@ -157,4 +158,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 DATA_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024
-
+SUPABASE_URL = "https://shilytcbxyuexdykaust.supabase.co"
+SUPABASE_KEY = "sb_publishable_xj0sUMwml3LR1iTBbGRccQ_6yf7v..." 
+SUPABASE_STORAGE_BUCKET = "audit_images"
+DEFAULT_FILE_STORAGE = 'django_storage_supabase.storage.SupabaseStorage'
