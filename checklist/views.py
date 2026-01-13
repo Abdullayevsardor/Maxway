@@ -337,7 +337,7 @@ def export_pdf(request):
     styles = getSampleStyleSheet()
     elements = []
 
-    elements.append(Paragraph("<b>Auditlar ro‘yxati</b>", styles["Title"]))
+    elements.append(Paragraph("<b>Список аудитов</b>", styles["Title"]))
     elements.append(Spacer(1, 20))
 
     table_data = [["Filial", "Sana", "Foiz (%)", "Auditor"]]
@@ -488,11 +488,11 @@ def export_audit_detail_excel(request, audit_id):
     # Header ma'lumotlari
     # =================
     ws.merge_cells('A1:C1')
-    ws['A1'] = f"Audit ID: {audit.id}"
-    ws['A2'] = f"Filial: {audit.filial_nomi}"
-    ws['A3'] = f"Auditor: {audit.auditor or '-'}"
-    ws['A4'] = f"Umumiy Foiz: {audit.total_percentage}%"
-    ws['A5'] = f"Audit vaqti: {created_local.strftime('%d-%m-%Y %H:%M')}"
+    ws['A1'] = f"ID аудита: {audit.id}"
+    ws['A2'] = f"Филиал: {audit.filial_nomi}"
+    ws['A3'] = f"Аудитор: {audit.auditor or '-'}"
+    ws['A4'] = f"Общий процент: {audit.total_percentage}%"
+    ws['A5'] = f"Время аудита: {created_local.strftime('%d-%m-%Y %H:%M')}"
 
     for cell in ['A1', 'A2', 'A3', 'A4', 'A5']:
         ws[cell].font = Font(bold=True, size=12)
