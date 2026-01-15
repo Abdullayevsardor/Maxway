@@ -339,8 +339,11 @@ def export_pdf(request):
 
     elements.append(Paragraph("<b>Список аудитов</b>", styles["Title"]))
     elements.append(Spacer(1, 20))
+ 
+    # headers = ["Филиал", "Дата", "Процент (%)", "Аудитор", "Изображение"]
 
     table_data = [["Filial", "Sana", "Foiz (%)", "Auditor"]]
+ 
     for a in audits:
         table_data.append([
             a.filial_nomi,
@@ -396,7 +399,6 @@ def generate_audit_detail_pdf(audit):
     elements.append(Spacer(1, 16))
 
     # ✅ TABLE DATA
-    # table_data = [["Band nomi", "Ball", "Rasm"]]
     table_data = [["Band nomi", "Ball"]]
 
     for d in audit.details.all():
@@ -408,8 +410,9 @@ def generate_audit_detail_pdf(audit):
         #     if os.path.exists(img_path):
         #         img = Image(img_path, width=70, height=70)
 
-        table_data.append([band_text, str(d.score), img])
-
+        # table_data.append([band_text, str(d.score), img])
+        table_data.append([band_text, str(d.score)])  # ikta ustunli versiya
+       
     # table = Table(table_data, colWidths=[280, 50, 140])
     table = Table(table_data, colWidths=[330, 70]) # ikta ustunli versiya
 
