@@ -93,13 +93,13 @@
   .s1 { background:#fff3cd; font-weight:700; color: #8a6d3b; }
   
   /* Rasmlar */
-  .img { 
-    max-width: 70px; 
-    max-height: 90px; 
-    border: 1px solid #ddd; 
-    border-radius: 6px; 
-    object-fit: cover;
-  }
+  /* .img {  */
+    /* max-width: 70px;  */
+    /* max-height: 90px;  */
+    /* border: 1px solid #ddd;  */
+    /* border-radius: 6px;  */
+    /* object-fit: cover; */
+  /* } */
 
 /* ✅ Mobile Tweaklar (Yaxshilangan variant) */
 @media (max-width: 600px) {
@@ -133,10 +133,10 @@
     }
 
     /* 3. Rasmni yanada ixcham qilish */
-    .img { 
-        max-width: 50px; 
-        max-height: 60px; 
-    }
+    /* .img {  */
+        /* max-width: 50px;  */
+        /* max-height: 60px;  */
+    /* } */
 
     /* 4. Muhim: Jadval ustunlariga foiz berish (Hammasi bo'lib 100% bo'lishi kerak) */
     /* Misol: Agar 4 ta ustun bo'lsa */
@@ -152,19 +152,19 @@
     }
 }
 /* Sahifadagi kichik rasmlar uchun */
-.image-preview, .img { 
-    width: 60px !important;    /* Jadval ichida kichik bo'lishi shart */
-    height: 60px !important;
-    object-fit: cover;
-    cursor: zoom-in; 
-    border-radius: 6px;
-    transition: transform 0.2s; 
-    display: inline-block;
-}
+/* .image-preview, .img {  */
+    /* width: 60px !important;    /* Jadval ichida kichik bo'lishi shart */ 
+    /* height: 60px !important; */
+    /* object-fit: cover; */
+    /* cursor: zoom-in;  */
+    /* border-radius: 6px; */
+    /* transition: transform 0.2s;  */
+    /* display: inline-block; */
+/* } */
 
-.image-preview:hover, .img:hover { 
-    transform: scale(1.1); 
-}
+/* .image-preview:hover, .img:hover {  */
+    /* transform: scale(1.1);  */
+/* }
 
 /* Modal - Faqat bosilganda chiqishi uchun */
 /* Modal foni */
@@ -263,7 +263,7 @@
                   {% endif %}">
                   {{ band.score }}
                 </td>
-                <td>
+                <!-- <td>
                   {% if band.images %}
                     {% for image in band.images %}
                       <img src="{{ image }}"
@@ -273,7 +273,7 @@
                   {% else %}
                     -
                   {% endif %}
-                </td>
+                </td> -->
               </tr>
             {% endfor %}
           </tbody>
@@ -294,6 +294,9 @@
 
 {% endblock %}
 
+<!-- rasm uchun     -->
+
+<!-- 
 {% block extra_js %}
 <script>
   function openImageModal(src) {
@@ -310,4 +313,4 @@
   }
 
 </script>
-{% endblock %}
+{% endblock %} -->
