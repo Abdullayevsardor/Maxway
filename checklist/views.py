@@ -480,11 +480,12 @@ def audit_delete(request, id):
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 
+ 
 def export_audit_detail_excel(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
     qs = audit.details.all()
 
-    created_local = timezone.localtime(audit.created_at)  # ✅ MUHIM
+    created_local = timezone.localtime(audit.created_at)
 
     wb = Workbook()
     ws = wb.active
@@ -493,39 +494,54 @@ def export_audit_detail_excel(request, audit_id):
     # =================
     # Header ma'lumotlari
     # =================
-    ws.merge_cells('A1:C1')
+    ws.merge_cells('A1:B1') # C1 ni olib tashladik, chunki rasm yo'q
     ws['A1'] = f"ID аудита: {audit.id}"
     ws['A2'] = f"Филиал: {audit.filial_nomi}"
     ws['A3'] = f"Аудитор: {audit.auditor or '-'}"
     ws['A4'] = f"Общий процент: {audit.total_percentage}%"
     ws['A5'] = f"Время аудита: {created_local.strftime('%d-%m-%Y %H:%M')}"
 
-    for cell in ['A1', 'A2', 'A3', 'A4', 'A5']:
-        ws[cell].font = Font(bold=True, size=12)
-        ws[cell].alignment = Alignment(horizontal="left")
+    for cell_row in range(1, 6):
+        cell = ws.cell(row=cell_row, column=1)
+        cell.font = Font(bold=True, size=12)
+        cell.alignment = Alignment(horizontal="left") # Chapga tekislash
+
 
     # =================
     # Jadval headers
     # =================
-    headers = ["Band nomi", "Ball", "Rasm"]
+    #     # headers = ["Band nomi", "Ball", "Rasm"] rasm ustuni olib tashlandi
+
+    headers = ["Название пункта", "Балл"] # Faqat 2 ta ustun
     start_row = 6
     for col_num, header in enumerate(headers, 1):
         cell = ws.cell(row=start_row, column=col_num, value=header)
         cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal="center")
-        ws.column_dimensions[get_column_letter(col_num)].width = 20
+        cell.alignment = Alignment(horizontal="left") # Sarlavhani ham chapga qildik
+        #         # ws.cell(row=row_num, column=3, value=d.image.url if d.image else "-") rasm ustuni olib tashlandi
+
+
+        if col_num == 1:
+            cell.alignment = Alignment(horizontal="center")
+        else:
+            cell.alignment = Alignment(horizontal="center")
+
+    # Ustun kengligini sozlash
+    ws.column_dimensions["A"].width = 70 # "Band nomi" uchun uzunroq kenglik
+    ws.column_dimensions["B"].width = 15 # "Ball" uchun kenglik
 
     # =================
     # Jadval ma'lumotlari
     # =================
     row_num = start_row + 1
     for d in qs:
-        ws.cell(row=row_num, column=1, value=str(d.band_id))
-        ws.cell(row=row_num, column=2, value=d.score)
-        ws.cell(row=row_num, column=3, value=d.image.url if d.image else "-")
+        # 1-ustun: Band nomi (chapga)
+        cell_name = ws.cell(row=row_num, column=1, value=str(d.band_id))
+        cell_name.alignment = Alignment(horizontal="left", wrap_text=True)
 
-        for col in range(1, 4):
-            ws.cell(row=row_num, column=col).alignment = Alignment(horizontal="center")
+        # 2-ustun: Ball (markazga)
+        cell_score = ws.cell(row=row_num, column=2, value=d.score)
+        cell_score.alignment = Alignment(horizontal="center")
 
         row_num += 1
 
@@ -535,6 +551,7 @@ def export_audit_detail_excel(request, audit_id):
     response["Content-Disposition"] = f'attachment; filename="audit_{audit.id}.xlsx"'
     wb.save(response)
     return response
+
 
 
 def export_audit_detail_pdf(request, audit_id):
