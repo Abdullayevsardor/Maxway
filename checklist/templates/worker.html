@@ -295,7 +295,9 @@ input[type="file"]::-webkit-file-upload-button {
           <tr>
             <th>Название группы</th>
             <th style="width: 100px;">Балл (0-3)</th>
-            <th style="width: 250px;">Изображение</th>
+            <!-- rasm ustuni olib tashlandi -->
+
+            <!-- <th style="width: 250px;">Изображение</th> -->
           </tr>
         </thead>
         <tbody id="audit-body"></tbody>
@@ -315,129 +317,7 @@ input[type="file"]::-webkit-file-upload-button {
 {% block extra_js %}
 <script>
 const successUrl = "{% url 'audit_success' %}";
-
-// const AUDIT_DATA = [
-//   { bandId: "hujjatlar", text: "Hujjatlar saqlanishi (arxiv/papka)" },
-//   // { bandId: "oxknv", text: "OXKNV chek-listi" },
-//   { bandId: "xodimlar_chek_listi", text: "Xodimlar chek-listi (ishga kirishayotgan)" },
-//   // { bandId: "dezinfeksiya_jurnali", text: "Dezinfeksiya jurnali" },
-//   // { bandId: "bakteritsid_lampa", text: "Bakteritsid lampa jurnali" },
-//   { bandId: "tibbiy_koriklar", text: "Tibbiy ko'riklar (o'tmaganlar soni) [-1: 2; -2: 1; -3: 0]" },
-//   // { bandId: "sanminimum", text: "Sanminimum (guvohnomasi yo'q xodimlar soni) [-1: 2; -2: 1; -3: 0]" },
-//   { bandId: "dezinfeksiya_shartnomasi", text: "Dezinfeksiya shartnomasi va aktlari" },
-//   { bandId: "qol_yuvish_zaxirasi", text: "Qo'l yuvish vositasi zaxirasi" },
-//   { bandId: "dori_qutisi", text: "Dori qutisidagi dori vositalari ro'yxatga asosanmi" },
-//   // { bandId: "termometr_metrologiya", text: "Termometr va psixrometrlar metrologiyadan o'tkazilganmi [-1: 2; -2: 1; -3: 0]" },
-//   // { bandId: "tarozilar_metrologiya", text: "Tarozilar metrologiyadan o'tkazilganmi [-1: 2; -2: 1; -3: 0]" },
-
-//   { bandId: "oshxona_subheader", text: "Oshxona", subheader: true },
-//   { bandId: "oshxona_qol_yuvish", text: "Oshxona: Tozalik cheklisti" },
-//   { bandId: "oshxona_tozalik_sifati", text: "Oshxona: Tozalik sifati (pol, devor, plintuslar)" },
-//   { bandId: "oshxona_anjom_tamgasi", text: "Oshxona: Devor, pol qoplamalarining holati" },
-//   { bandId: "oshxona_xom_pishgan", text: "Oshxona: Kirishda qo'l yuvish vositalari barchasi mavjud" },
-//   { bandId: "oshxona_saqlash_muddatlari", text: "Oshxona: Har soatda qo'l yuvish tartibiga rioya qilinishi" },
-//   { bandId: "oshxona_joylashtirish", text: "Oshxona: Anjom va ish stollari tamg'alangan, maqsadli ishlatilishi" },
-//   { bandId: "oshxona_idish_almashtirish", text: "Oshxona: Anjom va idishlar holati (materiali, sirti va h.)" },
-//   { bandId: "oshxona_bitta_anjom", text: "Oshxona: Mahsulotlarning birlamchi saqlash muddatlari" },
-//   { bandId: "oshxona_bodring_marinad", text: "Oshxona: Mahsulotlarning ikkilamchi saqlash muddatlari" },
-//   { bandId: "oshxona_tozalash_vositalari", text: "Oshxona: Idishlar har safar yangi mahsulot solishda almashtiriladimi" },
-//   { bandId: "oshxona_harorat", text: "Oshxona: Sosiskalar savdo hajmiga mos miqdorda archib qo'yilganmi" },
-//   { bandId: "oshxona_sovutgich_joyi", text: "Oshxona: To'g'ralgan tuzlangan bodring o'z marinad suvida saqlanadimi" },
-//   { bandId: "oshxona_issiqlik", text: "Oshxona: Sovutgich va muzlatgichlar termometri bormi" },
-//   { bandId: "oshxona_gosht_aralashmasligi", text: "Oshxona: Sovutgich va muzlatgichda mahsulot qo'shnichiligiga rioya qilinishi" },
-//   { bandId: "oshxona_fritur_muddat", text: "Oshxona: Sovutgich va muzlatgich ichining tozalik holati" },
-//   { bandId: "oshxona_fritur_talab", text: "Oshxona: Kotlet pishirish anjomlari tamg'alanganmi" },
-//   { bandId: "oshxona_ovqat_qoldigi", text: "Oshxona: Xom va pishgan g'o'sht aralashishiga yo'l qo'yilmaydimi" },
-//   { bandId: "oshxona_chiqindi_urna", text: "Oshxona: Pishgan go'shtni multiholderda saqlash muddatiga rioya qilinishi" },
-//   { bandId: "oshxona_issiq_suv", text: "Oshxona: Frityur yog'i talabga javob beradimi" },
-//   { bandId: "oshxona_dezozvita", text: "Oshxona: Chips baki tamg'alanganmi, tozaligi" },
-//   { bandId: "oshxona_Ishchi_yuzalar_chun_dezvosita_tayyorlanganmi", text: "Oshxona: Chiqindi urnalari to'lishi 2/3 qismdan oshmagan, qopqog'I yopiq" },
-//   { bandId: "oshxona_Oshxona_o'rikonlar_tozaligi", text: "Oshxona: Mo'rikonlar tozaligi" },
-//   { bandId: "oshxona_Ishchi_yuzalar_uchun_dezvosita_tayyorlanganmi", text: "Oshxona: Ishchi yuzalar uchun dezvosita tayyorlanganmi (2 chelak)" },
-
-
-//   { bandId: "salatxona_subheaderi", text: "Salatxona", subheader: true },
-//   { bandId: "salatxona_tozalik", text: "Salatchi: Tozalik cheklisti" },
-//   { bandId: "salatxona_anjom_yuvish_suv", text: "Salatchi: Tozalik sifati (pol, devor, plintuslar)" },
-//   { bandId: "salatxona_harorat", text: "Salatchi: Devor, pol qoplamalarining holati" },
-//   { bandId: "salatxona_sovutgich_rioya", text: "Salatchi: Nazorat termometri bor, harorat talab darajasida" },
-//   { bandId: "salatxona_mahsulot_qoshniligi", text: "Salatchi: Sovutgich va muzlatgich ichining tozalik holati" },
-//   { bandId: "salatxona_maxsus_qoidalar", text: "Salatchi: Sovutgich ichida mahsulot qo'shnichiligi" },
-//   { bandId: "salatxona_anjomlar_maqsad", text: "Salatchi: Mahsulotlar ikkilamchi saqlash muddatlari belgilangan" },
-//   { bandId: "salatxona_anjom_toza", text: "Salatchi: Anjomlar maqsadlii ishlatiladi (pichoq, taxtakach va h.)" },
-//   { bandId: "salatxona_sabzavot_urna", text: "Salatchi: Xodim sabzavot va ko'kat yuvish yo'riqnomasiga asosan ishlaydi" },
-//   { bandId: "salatxona_sovuq_ishlov_", text: "Salatchi: Sabzavot va ko'kat qoldiqlari uchun urna tamg'alangan" },
  
-//   { bandId: "moykova_subheader", text: "Moyka", subheader: true },
-//   { bandId: "moykova_tozalik", text: "Moyka: Tozalik cheklisti" },
-//   { bandId: "moykova_qoplamalar", text: "Moyka: Tozalik sifati (pol, devor, plintuslar)" },
-//   { bandId: "moykova_yuvish_vositalari", text: "Moyka: Devor, pol qoplamalarining holati" },
-//   { bandId: "moykova_chotka", text: "Moyka: Anjom va idishlar yuvilishi yo'riqnomaga asosan" },
-//   { bandId: "moykova_yuvish_jarayoni", text: "Moyka: Anjom va idish yuvish uchun chotka va b. vositalar holati" },
-//   { bandId: "moykova_toza_anjom", text: "Moyka: Stellaj holati, tamg'alanganligi" },
-//   { bandId: "moykova_kir_anjom", text: "Moyka: Toza anjomlar saqlanishi, maxsus konteyner mavjudmi" },
-//   { bandId: "moykova_jiroluvittel_tozaligi", text: "Moyka: Jiroulovitel chek-listi" },
-//   { bandId: "moykova_jiroluvittel_dezinfeksiya", text: "Moyka: Jiroulovitel tozaligi" },
-//   { bandId: "moykova_ovqat_qoldigi_urna", text: "Moyka: Yuvish anjomlarini dezinfeksiyasi uchun idish tamg'alangan" },
-//   { bandId: "moykova_ishchi_kiyim", text: "Moyka: Ovqat qoldiqlari uchun urna tamg'alangan, 2/3 to'lganda tozalanadi" },
-//   { bandId: "moykova_dezmodda_tayyorlash", text: "Moyka: Dezmodda zaxirasi" },
-//   // { bandId: "moyka_Dezmodda_to'g'ri_tayyorlanishi", text: "Moyka: Dezmodda to'g'ri tayyorlanishi va qo'llanishi (konsentratsiya)" },
-
-//   { bandId: "ombor_subheader", text: "Ombor", subheader: true },
-//   { bandId: "ombor_harorat", text: "Ombor: Tozalik sifati (pol, devor, plintuslar)" },
-//   { bandId: "ombor_saqlash_muddat", text: "Ombor: Termometr va psixrometr soz. Harorat va namlik talab darajasida" },
-//   { bandId: "ombor_stellajlar", text: "Ombor: Stellajlar tamg'alangan va maqsadli ishlatiladi" },
-//   { bandId: "ombor_joylashuv", text: "Ombor: Stellajlar tagi va usti tozalangan va begona buyumlar yo'q" },
-//   { bandId: "ombor_yaroqlilik_sanasi", text: "Ombor: Mahsulotlar qo'shnichiligiga rioya qilinishi (oziq/nooziq va h.)" },
-//   { bandId: "ombor_tozalash_vositalari", text: "Ombor: Mahsulotlar yerda saqlanishiga yo'l qo'yilmagan" },
-//   // { bandId: "ombor_quruq_hol", text: "Ombor: Taralar markerlangan, mahsulotlar tara nomiga asosan joylashtirilgan" },
-//   { bandId: "ombor_muzlatgich_termometr", text: "Ombor: Muddati o'tgan mahsulotlar yo'q" },
-//   // { bandId: "ombor_mahsulot_qoshniligi", text: "Ombor: Sovutgich va muzlatgich nazorat termometrlari bor" },
-//   { bandId: "ombor_harorat_qoshniligi", text: "Ombor: Sovutgich va muzlatgich kamerada yoritish manbasi soz" },
-//   { bandId: "ombor_tartib", text: "Ombor: Sovutgich va muzlatgichda mahsulot qo'shnichiligi" },
-//   { bandId: "ombor_qadoqlangan", text: "Ombor: Sovutgich va muzlatgich ichining tozalik holati" },
-//   { bandId: "ombor_begona_buyumlar", text: "Ombor: Qadoqlar yopiq holda (korobkasi yopiq)" },
-//   { bandId: "ombor_Begonabuyumlar_mavjudmi", text: "Ombor: Begona buyumlar mavjudmi" },
-
-//   { bandId: "koridor_subheader", text: "Koridor", subheader: true },
-//   { bandId: "koridor_tozalik", text: "Koridor: Tozalik holati" },
-//   { bandId: "koridor_tosiq", text: "Koridor: Mahsulot bilan to'sib qo'yilmagan" },
-//   { bandId: "koridor_qoplama", text: "Koridor: Devor va pollar qoplamasi holati" },
-//   { bandId: "koridor_begona_narsalar", text: "Koridor: Kimyoviy vositalar shkafida begona narsalar bormi, qulflanadimi" },
-//   { bandId: "koridor_dezbarer", text: "Koridor: Xodimlar hojatxonasidan chiqishda dezbar'yer bormi" },
-//   { bandId: "koridor_bezaklar", text: "Koridor: Mop uchun xona yoki joy ajratilganmi" },
-//   { bandId: "koridor_mop_yuvish", text: "Koridor: Mop anjomlari yo'riqnomaga asosan yuviladi, zararsizlantiriladi" },
-//   { bandId: "koridor_mop_sarasizlantirish", text: "Koridor: Mop anjomlarini quritish uchun alohida moslamalar mavjud" },
-//   { bandId: "koridor_mop_saqlash", text: "Koridor: Mop anjomlari saqlanishi (Hojatxona anjomlari alohida)" },
-  
-
-//   { bandId: "zal_subheader", text: "Zal", subheader: true },
-//   { bandId: "zal_tozalik", text: "Zal: Tozalik chek-listi" },
-//   { bandId: "zal_dezinfeksiya", text: "Zal: Tozalik holati" },
-//   { bandId: "zal_hojatxona_pol_dez", text: "Zal: Mijozdan keyin stollarni dezinfeksiya qilinishi" },
-//   { bandId: "zal_hojatxona_tozalik", text: "Zal: Patnislar tozalik holati (mijozdan keyin va smena oxirida tozalanishi)" },
-//   { bandId: "zal_qol_yuvish", text: "Zal: Zaldan oshxonaga kirishda dezbar'yer" },
-//   { bandId: "zal_hojatxona_vosita", text: "Zal: Qo'l yuvish vositalari to'liq va soz" },
-//   { bandId: "zal_hojatxona_eshik_yeli", text: "Zal: Hojatxona tozalash chek-listi" },
-//   { bandId: "zal_hojatxona_tozalik_vosita_2", text: "Zal: Hojatxona tozalik holati" },
-
-//   { bandId: "personal_subheader", text: "Personal", subheader: true },
-//   { bandId: "personal_kiyim_holati", text: "Personal: Xodimlar ish kiyimining holati" },
-//   { bandId: "personal_kiyim", text: "Personal: Xodimlar tirnog'i, sochi, soqoli" },
-//   { bandId: "personal_zargarlik", text: "Personal: Zargarlik va shunga o'xshash buyumlar bilan ishlash" },
-//   { bandId: "personal_yurish", text: "Personal: Xodimlar kiyim almashtirish xonasi va dush holati" },
-//   { bandId: "personal_kiyim_saqlash", text: "Personal: Xodimlar shaxsiy kiyimi va ish kiyimi saqlanishi" },
-//   { bandId: "personal_qol_yuvish", text: "Personal: Operatsiya almashtirganda kompaniya standartlariga rioya qilishi" },
-
-//   { bandId: "hudud_subheader", text: "Hudud", subheader: true },
-//   { bandId: "hudud_tozalash_jixoz", text: "Hudud: Korxona tashqi hududini tozalash jixozlari uchun joy" },
-//   { bandId: "hudud_sanitariya", text: "Hudud: Tashqi oynalar tozaligi" },
-//   { bandId: "hudud_deraza_tor", text: "Hudud: Ko'chaga qaragan derazalar hasharotga qarshi to'r bilan to'silganmi" },
-//   { bandId: "hudud_dezinfeksiya", text: "Hudud: Kemiruvchilarga qarshi tuzoqlar yetarlimi (tashqarida va ichkarida)" },
-//   { bandId: "hudud_trotuar", text: "Hudud: Trotuar va ariqlar tozaligi" },
-//   { bandId: "hudud_dezinfeksiya_talab", text: "Hudud: Chiqindi yig'ish joyining talabga javob berishi (maydoni, tozalash)" }
-// ];
-
 const AUDIT_DATA = {
   // Umumiy hujjatlar
   "hujjatlar": { text: "Hujjatlar saqlanishi (arxiv/papka)" },
@@ -583,39 +463,7 @@ function updatePercentage() {
   document.getElementById('totalPercentHeader').textContent = `Итоговый процент: ${finalPercentage.toFixed(2)}%`;
   document.getElementById('hiddenTotalPercentage').value = finalPercentage.toFixed(2);
 }
-
-// function createScoreInput(bandId, tdElement) {
-//   const input = document.createElement('input');
-//   input.type = 'number';
-//   input.className = 'score-input';
-//   input.min = '0';
-//   input.max = '3';
-//   input.placeholder = '0-3';
-//   input.name = `score_${bandId}`;
-//   input.id = `score_${bandId}`;
-
-//   input.addEventListener('input', function() {
-//     let score = this.value.trim();
-//     if (score !== '' && (parseInt(score) < 0 || parseInt(score) > 3 || score.length > 1)) {
-//       this.value = '';
-//       score = '';
-//     }
-
-//     tdElement.classList.remove('green', 'yellow', 'red', 'default');
-//     tdElement.classList.add(getColorClass(score));
-
-//     if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
-//     allScores[bandId].score = score;
-//     setInvalidState(this, this.value.trim() === '');
-
-//     updatePercentage();
-//   });
-
-//   tdElement.appendChild(input);
-//   tdElement.classList.add('default');
-
-//   if (!allScores[bandId]) allScores[bandId] = { score: '', images: [] };
-// }
+ 
 function createScoreInput(bandId, tdElement, bandText) {
   const input = document.createElement('input');
   input.type = 'number';
@@ -777,40 +625,7 @@ async function handleImageUpload(e, bandId, index, previewContainer, inputContai
   reader.readAsDataURL(file);
 }
 
-
-// function populateTable() {
-//   const tbody = document.getElementById('audit-body');
-//   tbody.innerHTML = '';
-
-//   AUDIT_DATA.forEach(data => {
-//     const row = document.createElement('tr');
-
-//     if (data.subheader) {
-//       row.classList.add('subheader-row');
-//       row.innerHTML = `<th colspan="3">${data.text}</th>`;
-//     } else {
-//       row.setAttribute('data-band-id', data.bandId);
-
-//       const bandTd = document.createElement('td');
-//       bandTd.textContent = data.text;
-//       row.appendChild(bandTd);
-
-//       const scoreTd = document.createElement('td');
-//       scoreTd.classList.add('score-column');
-//       createScoreInput(data.bandId, scoreTd);
-//       row.appendChild(scoreTd);
-
-//       const imageTd = document.createElement('td');
-//       imageTd.classList.add('image-column');
-//       createImageUploaders(data.bandId, imageTd);
-//       row.appendChild(imageTd);
-//     }
-
-//     tbody.appendChild(row);
-//   });
-
-//   updatePercentage();
-// }
+ 
 
 function populateTable() {
   const tbody = document.getElementById('audit-body');
@@ -823,7 +638,8 @@ function populateTable() {
 
     if (data.subheader) {
       row.classList.add('subheader-row');
-      row.innerHTML = `<th colspan="3">${data.text}</th>`;
+      // rasm bolganida <th colspan="3"> bo'lardi
+      row.innerHTML = `<th colspan="2">${data.text}</th>`; 
     } else {
       row.setAttribute('data-band-id', bandId);
 
@@ -835,11 +651,12 @@ function populateTable() {
       scoreTd.classList.add('score-column');
       createScoreInput(bandId, scoreTd, data.text); // data.text yuborilyapti
       row.appendChild(scoreTd);
+/////////  /////////////////////////////////////////////////////////////////////////////////////////////////////// rasm upload ustuni olib tashlandi  /////////
 
-      const imageTd = document.createElement('td');
-      imageTd.classList.add('image-column');
-      createImageUploaders(bandId, imageTd);
-      row.appendChild(imageTd);
+      // const imageTd = document.createElement('td');
+      // imageTd.classList.add('image-column');
+      // createImageUploaders(bandId, imageTd);
+      // row.appendChild(imageTd);
     }
     tbody.appendChild(row);
   });
