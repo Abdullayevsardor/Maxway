@@ -396,20 +396,23 @@ def generate_audit_detail_pdf(audit):
     elements.append(Spacer(1, 16))
 
     # ✅ TABLE DATA
-    table_data = [["Band nomi", "Ball", "Rasm"]]
+    # table_data = [["Band nomi", "Ball", "Rasm"]]
+    table_data = [["Band nomi", "Ball"]]
 
     for d in audit.details.all():
         band_text = Paragraph(str(d.band_id), styles["Normal"])
 
-        img = "-"
-        if d.image:
-            img_path = os.path.join(settings.MEDIA_ROOT, d.image.name)
-            if os.path.exists(img_path):
-                img = Image(img_path, width=70, height=70)
+        # img = "-"
+        # if d.image:
+        #     img_path = os.path.join(settings.MEDIA_ROOT, d.image.name)
+        #     if os.path.exists(img_path):
+        #         img = Image(img_path, width=70, height=70)
 
         table_data.append([band_text, str(d.score), img])
 
-    table = Table(table_data, colWidths=[280, 50, 140])
+    # table = Table(table_data, colWidths=[280, 50, 140])
+    table = Table(table_data, colWidths=[330, 70]) # ikta ustunli versiya
+
     table.setStyle(TableStyle([
         ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
         ("BACKGROUND", (0, 0), (-1, 0), colors.lightblue),
