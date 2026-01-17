@@ -17,8 +17,15 @@
             {% endfor %}
         </select>
 
-        <input type="date" name="from" value="{{ request.GET.from }}">
-        <input type="date" name="to" value="{{ request.GET.to }}">
+        <!-- <input type="date" name="from" value="{{ request.GET.from }}"oninput="checkEmpty(this)">
+        <input type="date" name="to" value="{{ request.GET.to }}"oninput="checkEmpty(this)"> -->
+        <input type="date" name="from" 
+           value="{{ request.GET.from }}" 
+           oninput="if(this.value=='') { window.location.href=window.location.pathname; }">
+    
+        <input type="date" name="to" 
+               value="{{ request.GET.to }}" 
+               oninput="if(this.value=='') { window.location.href=window.location.pathname; }">
 
         <button type="submit" class="btn">Фильтрация</button>
     </div>
