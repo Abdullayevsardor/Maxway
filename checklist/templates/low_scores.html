@@ -211,7 +211,7 @@
             <tr>
               <th>Пункт</th>
               <th style="width:70px;">Баллы</th>
-              <th style="width:140px;">Изображение</th>
+              <!-- <th style="width:140px;">Изображение</th> -->
             </tr>
           </thead>
           <tbody>
@@ -219,13 +219,13 @@
               <tr>
                 <td>{{ d.band_id }}</td>
                 <td class="{% if d.score == 0 %}s0{% else %}s1{% endif %}">{{ d.score }}</td>
-                <td>
+                <!-- <td>
                   {% if d.image %}
                     <img class="img" src="{{ d.image.url }}" />
                   {% else %}
                     -
                   {% endif %}
-                </td>
+                </td> -->
               </tr>
             {% endfor %}
           </tbody>
@@ -234,10 +234,10 @@
     </div>
   {% endif %}
 {% endfor %}
-<div id="imageModal" onclick="this.style.display='none'" style="display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9); cursor:zoom-out; align-items:center; justify-content:center;">
+<!-- <div id="imageModal" onclick="this.style.display='none'" style="display:none; position:fixed; z-index:10000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9); cursor:zoom-out; align-items:center; justify-content:center;">
     <img id="modalImg" style="max-width:95%; max-height:95%; border:3px solid white; border-radius:10px;">
-</div>
-<script>
+</div> -->
+<!-- <script>
     // Sahifadagi barcha "img" klassiga ega rasmlarni topamiz
     document.querySelectorAll('.img').forEach(image => {
         image.onclick = function() {
@@ -248,7 +248,7 @@
             modalImg.src = this.src;      // Bosilgan rasm manzilini o'rnatish
         };
     });
-</script>
+</script> -->
 
 <div class="action-bar">
     {% if is_admin %}
