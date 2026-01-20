@@ -55,7 +55,7 @@ urlpatterns = [
     ),
     # ===== LOGOUT =====
     path('logout/', custom_logout, name='logout'),
-    path('setup-admin-777/', views.create_admin_once),
+    # path('setup-admin-777/', views.create_admin_once),    bu admin qo'shish uchun 
 
     #==== AUTHENTICATION =====
     path('', worker_login, name='login'),
