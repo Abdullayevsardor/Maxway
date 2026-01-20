@@ -20,17 +20,24 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from django.conf import settings
 import os
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
-from .models import Branch
 from django.contrib.auth.models import User
 from django.utils.crypto import constant_time_compare
 from django.utils import timezone
 from django.db.models import Prefetch
+from django.contrib.admin.views.decorators import staff_member_required
 
+
+
+def create_admin_once(request):
+    # 'admin_boss' ismli superuser bor-yo'qligini tekshiradi
+    if not User.objects.filter(username="admin_boss").exists():
+        # Superuser yaratadi (Login: admin_boss, Parol: parol777)
+        User.objects.create_superuser("admin_boss", "admin@mail.com", "parol777")
+        return HttpResponse("Superuser yaratildi! Endi bu kodni o'chirib yuborsangiz bo'ladi.")
+    return HttpResponse("Superuser allaqachon mavjud.")
 
  
 
@@ -220,11 +227,11 @@ def audit_success_view(request):
 
 
 
- 
 def audit_details_page(request):
+    # 1. Ma'lumotlarni olish
     queryset = Audit.objects.all()
 
-    # Filial bo'yicha filter
+    # 2. Filtrlash (sizning kodingiz)
     filial = request.GET.get("filial")
     if filial and filial != "all":
         queryset = queryset.filter(filial_nomi=filial)
@@ -239,19 +246,23 @@ def audit_details_page(request):
 
     queryset = queryset.order_by("-id")
 
-    # HTML uchun  foiz uzarish
+    # 3. Foizlarni hisoblash
     for audit in queryset:
         audit.percent = audit.total_percentage
 
- 
-
     all_filials = Audit.objects.values_list("filial_nomi", flat=True).distinct()
+
+    # 4. ✅ HUQUQLARNI TEKSHIRISH (ASOSIY QISM)
+    # is_staff — bu foydalanuvchi admin ekanligini bildiradi
+    # (Buni worker_login funksiyasida o'rnatgan edik)
+    is_admin = request.user.is_staff 
 
     return render(request, "audit_page.html", {
         "audits": queryset,
         "all_filials": all_filials,
-        "show_action_bar": True
-    })
+        "is_admin": is_admin,  # Shablonga ruxsatnomani yuboramiz
+    })  
+ 
   
  
 
@@ -468,18 +479,16 @@ def audit_filial_detail(request, filial_nomi):
     })
 
 
-@require_POST
+@staff_member_required
 def audit_delete(request, id):
     audit = get_object_or_404(Audit, id=id)
-    audit.delete()
-    return redirect(request.META.get("HTTP_REFERER", "/"))
+    if request.method == 'POST':
+        audit.delete()
+    return redirect('audit_page') # 'audit_list' o'rniga o'z yo'lingizni yozing
 
 
 
  
-from openpyxl.styles import Font, Alignment
-from openpyxl.utils import get_column_letter
-
  
 def export_audit_detail_excel(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
@@ -577,22 +586,37 @@ def worker_login(request):
         if not username or not pin:
             error = "Требуется ввод имени пользователя и пароля!"
         elif not settings.GLOBAL_WORKER_PIN:
-            error = "На сервере не настроен GLOBAL_WORKER_PIN!"
+            error = "На servere ne nastroyen GLOBAL_WORKER_PIN!"
         elif constant_time_compare(pin, settings.GLOBAL_WORKER_PIN):
+            # 1. Foydalanuvchini olish yoki yaratish
             user, created = User.objects.get_or_create(username=username)
+
+            # 2. Qobil va Baxtyorga Admin (Staff) huquqini berish
+            # Ismlar kichik harfda tekshiriladi (chunki username.lower() qilingan)
+            admins = ['qobil', 'baxtyor']
+            
+            if username in admins:
+                user.is_staff = True  # Admin panelga kirish va tugmalarni ko'rish huquqi
+                user.is_superuser = True # To'liq huquq (ixtiyoriy)
+            else:
+                user.is_staff = False # Oddiy foydalanuvchi
+                user.is_superuser = False
 
             if created or user.has_usable_password():
                 user.set_unusable_password()
-                user.save()
+            
+            user.save()
 
+            # 3. Profil yaratish
             Profile.objects.get_or_create(user=user, defaults={"role": "worker"})
 
+            # 4. Tizimga kirish
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-
-            # ✅ MANA SHU QATOR (MUHIM)
             request.session["auditor_username"] = username
 
-            return redirect('audit_form')
+            # 5. Yo'naltirish (Redirect)
+            # Siz aytgan audit_page.html sahifasiga o'tish
+            return redirect('audit_page') # 'audit_list' - bu sizning audit_page.html ni chiqaradigan URL nomingiz
         else:
             error = "Неверный пароль!"
 
@@ -640,6 +664,17 @@ def low_scores_view(request):
     # dropdown uchun filiallar
     all_filials = Audit.objects.values_list("filial_nomi", flat=True).distinct()
 
+    # return render(request, "low_scores.html", {
+    #     "audits": audits_qs,
+    #     "all_filials": all_filials,
+    #     "selected_filial": filial or "all",
+    #     "selected_score": score or "all",
+    #     "date_from": date_from or "",
+    #     "date_to": date_to or "",
+    #     "show_action_bar": True
+    # })
+    is_admin = request.user.is_staff 
+
     return render(request, "low_scores.html", {
         "audits": audits_qs,
         "all_filials": all_filials,
@@ -647,5 +682,5 @@ def low_scores_view(request):
         "selected_score": score or "all",
         "date_from": date_from or "",
         "date_to": date_to or "",
-        "show_action_bar": True
+        "is_admin": is_admin,  # ✅ Mana shu qatorni qo'shing
     })
