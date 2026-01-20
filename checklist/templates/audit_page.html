@@ -55,15 +55,24 @@
                 <td>{{ audit.percent }}%</td>
                 <td>{{ audit.created_at|date:"Y-m-d H:i" }}</td>
                 <td>
-                    <form method="POST" action="{% url 'audit_delete' audit.id %}"
-                        onsubmit="return confirm('Вы действительно хотите удалить?');">
-                        {% csrf_token %}
-                        <button type="submit" class="del-btn"
-                                style="background:#f44336;color:white;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;">
-                            Удалить
-                        </button>
-                    </form>
+                    {% if is_admin %}
+                        <form method="POST" action="{% url 'audit_delete' audit.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="del-btn">УДАЛИТЬ</button>
+                        </form>
+                    {% else %}
+                        <span style="color: gray;">Просмотр</span>
+                    {% endif %}
                 </td>
+                <div class="action-bar">
+                    {% if is_admin %}
+                        <a href="{% url 'audit_form' %}" class="btn" style="background: #898884;">+ Аудит</a>
+                    {% endif %}
+
+                    <a href="{% url 'low_scores' %}" class="btn" style="background: #898884; color: black;">! Низкие баллы</a>
+                    
+                    <a href="javascript:history.back()" class="btn" style="background: #898884;">← Назад</a>
+                </div>
             </tr>
             {% endfor %}
         </tbody>
@@ -84,6 +93,28 @@
   /* Card va Filial ma'lumotlari */
     /* 🔹 Filtr + Export umumiy qator */
     /*  */
+
+.action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;            /* Tugmalar orasidagi masofa kamaydi */
+    margin-top: 15px;
+    padding: 8px;
+    background: #fff;
+    border-radius: 10px;
+    justify-content: flex-end; /* Tugmalarni markazga yig'adi */
+}
+
+.action-bar .btn {
+    flex: 0 1 auto;      /* Tugmalar o'z matni o'lchamida bo'ladi (ekranni to'ldirmaydi) */
+    text-align: center;
+    min-width: 80px;     /* Minimal kenglik kamaydi */
+    padding: 6px 12px;   /* Tugma ichidagi bo'shliq kamaydi */
+    font-size: 12px;     /* Matn o'lchami kichiklashdi */
+    border-radius: 6px;  /* Burchaklari biroz o'tkirroq */
+    text-decoration: none;
+    font-weight: bold;
+}
 .filter-export-bar {
     display: flex;
     justify-content: space-between;
