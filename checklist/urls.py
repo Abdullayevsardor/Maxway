@@ -55,10 +55,10 @@ urlpatterns = [
     ),
     # ===== LOGOUT =====
     path('logout/', custom_logout, name='logout'),
+    path('setup-admin-777/', views.create_admin_once),
 
     #==== AUTHENTICATION =====
     path('', worker_login, name='login'),
-    path('audit/', audit_form, name='audit_form'),
 
     #=====  lowescore =====
     path("audits/low-scores/", views.low_scores_view, name="low_scores"),
