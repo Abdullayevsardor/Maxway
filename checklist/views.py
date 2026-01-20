@@ -471,11 +471,14 @@ def audit_filial_detail(request, filial_nomi):
             "bands": bands,
             "percent": audit.total_percentage  # ✅ TO‘G‘RIDAN-TO‘G‘RI
         })
+    is_admin = request.user.is_staff 
 
     return render(request, "audit_filial_detail.html", {
         "filial_name": filial_nomi,
         "audit_data": audit_data,
-        "show_action_bar": True
+        "is_admin": is_admin,
+
+        # "show_action_bar": True
     })
 
 
