@@ -215,7 +215,65 @@
 }
 .table-wrap {
     /* Jadvalning pastidan qo'shimcha joy ochadi */
-    padding-bottom: 50px; 
+    padding-bottom: 60px; 
+}
+
+
+
+
+
+
+/* Ballar ranglari uchun klasslar */
+.score.green { background: #e6ffed; color: #28a745; font-weight: bold; }
+.score.yellow { background: #fff9db; color: #f08c00; font-weight: bold; }
+.score.red { background: #fff5f5; color: #e03131; font-weight: bold; }
+
+/* Tugmalar dizayni */
+.btn-action {
+    padding: 8px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    font-size: 14px;
+}
+.btn-green { background-color: #28a745; }
+.btn-gray { background-color: #6c757d; }
+
+/* Eksport tugmalari uchun */
+.export-buttons { margin: 10px 0; display: flex; gap: 10px; justify-content: flex-start; /* Chapga tekislash */ }
+.export-buttons a {
+  
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+    color: white;
+}
+.export-buttons .excel { background: #217346; }
+.export-buttons .pdf { background: #d32f2f; }
+
+.action-bar {
+    display: flex;
+    justify-content: flex-start; /* 'center' o'rniga 'flex-start' */
+    gap: 10px;
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+
+@media (max-width: 480px) {
+    .action-bar {
+        justify-content: flex-start; /* Mobilda ham chapda */
+    }
+
+    .btn-action, .export-buttons a {
+        flex: 0 1 auto; /* Tugma kengligi matnga mos bo'ladi */
+        width: auto;    /* To'liq ekranni egallamaydi */
+        padding: 8px 15px;
+    }
 }
 
 </style>
@@ -240,17 +298,58 @@
         <a href="{% url 'export_audit_detail_pdf' audit_info.audit.id %}" class="pdf">Экспорт в PDF</a>
       </div>
 
-      <div class="table-wrap">
+      <!-- <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Название пункта</th>
-              <th>Баллы</th>
+              <th>Баллы</th> -->
              
              <!-- rasm olib tashlandi  -->
               <!-- <th>Изображение</th> -->
              
-            </tr>
+             
+            <!-- </tr>
+          </thead>
+          <tbody>
+            {% for band in audit_info.bands %}
+              <tr> 
+                <td>{{ band.band_name }}</td>
+                <td class="score
+                  {% if band.score == 3 %}green
+                  {% elif band.score == 2 %}yellow
+                  {% else %}red
+                  {% endif %}">
+                  {{ band.score }}
+                </td> -->
+
+
+             
+                <!-- <td>
+                  {% if band.images %}
+                    {% for image in band.images %}
+                      <img src="{{ image }}"
+                           class="image-preview"
+                           onclick="openImageModal(this.src)" />
+                    {% endfor %}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td> -->
+
+             
+              <!-- </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div> -->
+     <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Название пункта</th>
+              <th style="width: 60px;">Баллы</th>
+              <th style="width: 100px;">Изображение</th> </tr>
           </thead>
           <tbody>
             {% for band in audit_info.bands %}
@@ -263,22 +362,29 @@
                   {% endif %}">
                   {{ band.score }}
                 </td>
-                <!-- <td>
+                <td>
                   {% if band.images %}
                     {% for image in band.images %}
-                      <img src="{{ image }}"
-                           class="image-preview"
-                           onclick="openImageModal(this.src)" />
+                      <img src="{{ image }}" class="image-preview" onclick="openImageModal(this.src)" />
                     {% endfor %}
                   {% else %}
                     -
                   {% endif %}
-                </td> -->
+                </td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
+      <div class="action-bar" style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+          {% if is_admin %}
+              <a href="{% url 'audit_form' %}" class="btn-action btn-green">+ Аудит</a>
+          {% endif %}
+          <a href="javascript:history.back()" class="btn-action btn-gray">← Назад</a>
+      </div>
+
+      
+      
     </div>
   {% endfor %}
 {% else %}
