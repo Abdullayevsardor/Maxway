@@ -596,7 +596,7 @@ def worker_login(request):
 
             # 2. Qobil va Baxtyorga Admin (Staff) huquqini berish
             # Ismlar kichik harfda tekshiriladi (chunki username.lower() qilingan)
-            admins = ['qobil', 'baxtyor']
+            admins = ['mwqobil', 'mwbaxtiyor']
             
             if username in admins:
                 user.is_staff = True  # Admin panelga kirish va tugmalarni ko'rish huquqi
