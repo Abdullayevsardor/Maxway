@@ -73,12 +73,12 @@
 
 <div class="action-bar">
     {% if is_admin %}
-        <a href="{% url 'audit_form' %}" class="btn" style="background: #898884;">+ Аудит</a>
+        <a href="{% url 'audit_form' %}" class="btn" style="background: #28a745;">+ Аудит</a>
     {% endif %}
 
-    <a href="{% url 'low_scores' %}" class="btn" style="background: #898884; color: black;">! Низкие баллы</a>
+    <a href="{% url 'low_scores' %}" class="btn" style="background: #f08c00; color: black;">! Низкие баллы</a>
     
-    <a href="javascript:history.back()" class="btn" style="background: #898884;">← Назад</a>
+    <a href="javascript:history.back()" class="btn" style="background: #6c757d;">← Назад</a>
 </div>
 
 {% endblock %}
