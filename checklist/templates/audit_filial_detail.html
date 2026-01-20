@@ -298,58 +298,14 @@
         <a href="{% url 'export_audit_detail_pdf' audit_info.audit.id %}" class="pdf">Экспорт в PDF</a>
       </div>
 
-      <!-- <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Название пункта</th>
-              <th>Баллы</th> -->
-             
-             <!-- rasm olib tashlandi  -->
-              <!-- <th>Изображение</th> -->
-             
-             
-            <!-- </tr>
-          </thead>
-          <tbody>
-            {% for band in audit_info.bands %}
-              <tr> 
-                <td>{{ band.band_name }}</td>
-                <td class="score
-                  {% if band.score == 3 %}green
-                  {% elif band.score == 2 %}yellow
-                  {% else %}red
-                  {% endif %}">
-                  {{ band.score }}
-                </td> -->
-
-
-             
-                <!-- <td>
-                  {% if band.images %}
-                    {% for image in band.images %}
-                      <img src="{{ image }}"
-                           class="image-preview"
-                           onclick="openImageModal(this.src)" />
-                    {% endfor %}
-                  {% else %}
-                    -
-                  {% endif %}
-                </td> -->
-
-             
-              <!-- </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div> -->
+      
      <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>Название пункта</th>
               <th style="width: 60px;">Баллы</th>
-              <th style="width: 100px;">Изображение</th> </tr>
+              <!-- <th style="width: 100px;">Изображение</th> </tr> -->
           </thead>
           <tbody>
             {% for band in audit_info.bands %}
@@ -362,7 +318,7 @@
                   {% endif %}">
                   {{ band.score }}
                 </td>
-                <td>
+                <!-- <td>
                   {% if band.images %}
                     {% for image in band.images %}
                       <img src="{{ image }}" class="image-preview" onclick="openImageModal(this.src)" />
@@ -370,7 +326,7 @@
                   {% else %}
                     -
                   {% endif %}
-                </td>
+                </td> -->
               </tr>
             {% endfor %}
           </tbody>
