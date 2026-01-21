@@ -54,7 +54,7 @@
                 </td>
                 <td>{{ audit.percent }}%</td>
                 <td>{{ audit.created_at|date:"Y-m-d H:i" }}</td>
-                <td>
+                <!-- <td>
                     {% if is_admin %}
                         <form method="POST" action="{% url 'audit_delete' audit.id %}">
                             {% csrf_token %}
@@ -63,7 +63,19 @@
                     {% else %}
                         <span style="color: gray;">Просмотр</span>
                     {% endif %}
+                </td> -->
+                <td>
+                    {% if is_admin %}
+                        <form method="POST" action="{% url 'audit_delete' audit.id %}" 
+                            onsubmit="return confirm('Вы действительно хотите удалить?');">
+                            {% csrf_token %}
+                            <button type="submit" class="del-btn">УДАЛИТЬ</button>
+                        </form>
+                    {% else %}
+                        <span style="color: gray;">Просмотр</span>
+                    {% endif %}
                 </td>
+                
                 
             </tr>
             {% endfor %}
