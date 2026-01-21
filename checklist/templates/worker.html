@@ -706,13 +706,13 @@ document.getElementById('auditForm').addEventListener('submit', function(e) {
   const scoreInputs = Array.from(document.querySelectorAll('.score-input'));
   scoreInputs.forEach(inp => setInvalidState(inp, false));
 
-  const firstEmpty = scoreInputs.find(inp => inp.value.trim() === '');
-  if (firstEmpty) {
-  setInvalidState(firstEmpty, true);
-  firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  setTimeout(() => firstEmpty.focus(), 250);
-  return;
-  }
+  // const firstEmpty = scoreInputs.find(inp => inp.value.trim() === '');
+  // if (firstEmpty) {
+  // setInvalidState(firstEmpty, true);
+  // firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // setTimeout(() => firstEmpty.focus(), 250);
+  // return;
+  // }
 
   const formData = new FormData(this);
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
