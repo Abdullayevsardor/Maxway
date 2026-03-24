@@ -86,24 +86,24 @@ WSGI_APPLICATION = 'project.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        ssl_require=not DEBUG,
-    )
-}
-
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'audit_db',           # 2-qadamda yaratgan DB nomi
-#         'USER': 'audit_user',         # 2-qadamda yaratgan foydalanuvchi nomi
-#         'PASSWORD': 'sardor1999', # Parol
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
+#     "default": dj_database_url.config(
+#         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+#         conn_max_age=600,
+#         ssl_require=not DEBUG,
+#     )
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'audit_db',           # 2-qadamda yaratgan DB nomi
+        'USER': 'audit_user',         # 2-qadamda yaratgan foydalanuvchi nomi
+        'PASSWORD': 'sardor1999', # Parol
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
