@@ -68,7 +68,7 @@ print("DATABASE_URL =", repr(DATABASE_URL))
 
 if DATABASE_URL:
     DATABASES = {
-        "default": dj_database_url.parse(
+        "default": DATABASE_URL.parse(
             DATABASE_URL,
             conn_max_age=600,
             ssl_require=True,
