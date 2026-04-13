@@ -163,7 +163,6 @@
 # FILE_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024
 
 
-
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -172,10 +171,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-if not SECRET_KEY:
-    raise Exception("SECRET_KEY topilmadi")
-
+SECRET_KEY = os.getenv("SECRET_KEY", "temporary-insecure-build-key")
 DEBUG = os.getenv("DEBUG", "0") == "1"
 
 ALLOWED_HOSTS = [
@@ -185,7 +181,6 @@ ALLOWED_HOSTS = [
 ]
 
 GLOBAL_WORKER_PIN = os.getenv("GLOBAL_WORKER_PIN")
-
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS = [
@@ -230,16 +225,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise Exception("DATABASE_URL topilmadi")
 
-DATABASES = {
-    "default": dj_database_url.parse(
-        DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True,
-    )
-}
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
