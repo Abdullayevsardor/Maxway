@@ -77,16 +77,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": "mydatabase",
-#     }
-# }
-
+ 
 # DATABASES = {
 #     "default": dj_database_url.config(
 #         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
@@ -95,16 +86,39 @@ WSGI_APPLICATION = 'project.wsgi.application'
 #     )
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'audit_db',           # 2-qadamda yaratgan DB nomi
-        'USER': 'audit_user',         # 2-qadamda yaratgan foydalanuvchi nomi
-        'PASSWORD': 'sardor1999', # Parol
-        'HOST': 'localhost',
-        'PORT': '5432',
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'audit_db',           # 2-qadamda yaratgan DB nomi
+#         'USER': 'audit_user',         # 2-qadamda yaratgan foydalanuvchi nomi
+#         'PASSWORD': 'sardor1999', # Parol
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+print("DATABASE_URL =", repr(DATABASE_URL))
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=not DEBUG,
+        )
     }
-}
+else:
+    print("⚠️ DATABASE_URL yo‘q — fallback sqlite ishlayapti")
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
