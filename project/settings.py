@@ -62,8 +62,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
  
-DATABASE_URL = os.getenv("DATABASE_URL")
-print("DATABASE_URL =", repr(DATABASE_URL))
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    print("CRITICAL: DATABASE_URL is missing in environment variables!")
 
 
 if DATABASE_URL:
