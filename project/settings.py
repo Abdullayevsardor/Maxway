@@ -23,7 +23,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # DEBUG ni ham productionda False qilish kerak
 DEBUG = os.getenv("DEBUG", "0") == "1"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+# ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = ("*")
 
 GLOBAL_WORKER_PIN = os.getenv("GLOBAL_WORKER_PIN")
 
