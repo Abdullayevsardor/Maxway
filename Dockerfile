@@ -58,4 +58,4 @@ RUN python manage.py collectstatic --noinput
 
 # Gunicorn orqali ishga tushirish (JSON formatida tavsiya etiladi)
 # Migratsiyalar va serverni ishga tushirishni bitta qatorga jamlaymiz
-CMD sh -c "python manage.py migrate --noinput && gunicorn project.wsgi:application --bind 0.0.0.0:$PORT"
+# CMD sh -c "python manage.py migrate --noinput && gunicorn project.wsgi:application --bind 0.0.0.0:$PORT"
